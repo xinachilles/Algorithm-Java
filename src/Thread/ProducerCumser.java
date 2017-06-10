@@ -3,6 +3,8 @@ package Thread;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -12,62 +14,125 @@ import java.util.concurrent.locks.ReentrantLock;
  * Created by xhu on 6/10/17.
  */
 public class ProducerCumser {
-    Queue<Integer> q = new LinkedList<>();
-    Random r = new Random();
+    enum Type {paper,usb};
+    static  Queue<Type> q = new LinkedList<>();
+    //static  Random r = new Random();
 
-    public Thread produce(final Lock lock, final Condition condition) throws InterruptedException
-    {
 
-        while (true)
-        {
-            lock.lock();
-            try {
+    public static Thread Produce(final Lock lock, final Condition condition,Type type) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
 
-                int number = r.nextInt();
-                q.offer(number);
-                System.out.println("Producer produced-"
-                        + number);
+                    lock.lock();
+                    try {
 
-                condition.signalAll();
-                 Thread.sleep(1000);
-            }finally {
-                lock.unlock();
-            }
+                        //int number = r.nextInt();
+                        q.offer(type);
+                        System.out.println("Producer produced-"
+                                + type);
 
-        }
+                        condition.signalAll();
+                        //Thread.sleep(3000);
+
+                    }finally {
+                        lock.unlock();
+                    }
+
+                }
+
+        };
+
+        return thread;
     }
 
-    public Thread Coumser(final Lock lock, final Condition condition) throws InterruptedException{
-        while (true)
-        {
-            lock.lock();
-            try {
+    public static Thread PaperConsumer(final Lock lock, final Condition condition ){
+        Thread thread = new Thread() {
 
-               if(q.isEmpty()) condition.wait();
+            public void run() {
+                while (true) {
+                    lock.lock();
+                    try {
 
-                System.out.println("Producer produced-"
-                        + q.poll());
+                        while (q.isEmpty() || q.peek() != Type.paper) condition.await();
+
+                        System.out.println("Consumer consum paper-"
+                                + q.poll());
 
 
-            }finally {
-                lock.unlock();
+                    }catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    finally {
+                        lock.unlock();
+                    }
+
+                }
             }
+        };
 
-        }
+        return thread;
     }
 
-    public static void main(String[] args) {
+    public static Thread UsbConsumer(final Lock lock, final Condition condition ){
+        Thread thread = new Thread() {
+
+            public void run() {
+                while (true) {
+                    lock.lock();
+                    try {
+
+                        while (q.isEmpty() || q.peek() != Type.usb) condition.await();
+
+                        System.out.println("Consumer consum usb-"
+                                + q.poll());
+
+
+                    }catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    finally {
+                        lock.unlock();
+                    }
+
+                }
+            }
+        };
+
+        return thread;
+    }
+
+
+    public static void main(String[] args) throws InterruptedException {
         final Lock lock = new ReentrantLock();
         final Condition condition = lock.newCondition();
+        Thread t2 = UsbConsumer(lock, condition);
+        Thread t3 = PaperConsumer(lock, condition);
 
-        // ThreadId threadId = new ThreadId();
-        //threadId.setId(1);
-        Thread t1 = new (lock, condition, 1, 2);
-        Thread t2 = setThread(lock, condition, 2, 3);
-        Thread t3 = setThread(lock, condition, 3, 1);
-        t1.start();
         t2.start();
         t3.start();
+        // ThreadId threadId = new ThreadId();
+        //threadId.setId(1);
+
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+
+
+        for (int i = 0; i < 10; i++) {
+
+            Runnable worker = Produce(lock,condition,Type.paper);
+
+            executor.execute(worker);
+
+        }
+
+        for (int i = 0; i < 10; i++) {
+
+            Runnable worker = Produce(lock,condition,Type.usb);
+
+            executor.execute(worker);
+
+        }
+
 
     }
 
