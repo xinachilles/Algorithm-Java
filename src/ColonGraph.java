@@ -5,33 +5,27 @@ import java.util.*;
  */
 public class ColonGraph {
     public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
+        Map<Integer,UndirectedGraphNode> maps =new HashMap<>();
+        return clon(node,maps);
+
+    }
+
+    private UndirectedGraphNode clon(UndirectedGraphNode node,  Map<Integer,UndirectedGraphNode> maps){
         if(node == null){
             return null;
         }
 
-        Map<UndirectedGraphNode, UndirectedGraphNode> nodeMaps = new HashMap<>();
-        Queue<UndirectedGraphNode> visiting = new LinkedList<>();
-        visiting.offer(node);
+        if(maps.containsKey(node.label)){
+            return maps.get(node.label);
+        }
+        UndirectedGraphNode clonNode = new UndirectedGraphNode(node.label);
+        maps.put(node.label,clonNode);
 
-        Set<UndirectedGraphNode> visited = new HashSet<>();
-        while(!visiting.isEmpty()){
-            UndirectedGraphNode current = visiting.poll();
-            nodeMaps.put(current, new UndirectedGraphNode(current.label));
-            visited.add(current);
-
-            for(UndirectedGraphNode n : current.neighbors){
-                if(!visited.contains(n))
-                    visiting.offer(n);
-            }
-
+        for(UndirectedGraphNode n : node.neighbors){
+            maps.get(node.label).neighbors.add(clon(n,maps));
         }
 
-        for(UndirectedGraphNode n: nodeMaps.keySet()){
-            for(UndirectedGraphNode n1 : n.neighbors){
-                nodeMaps.get(n).neighbors.add(nodeMaps.get(n1));
-            }
-        }
-
-        return nodeMaps.get(node);
+        return maps.get(node.label);
     }
 }
+

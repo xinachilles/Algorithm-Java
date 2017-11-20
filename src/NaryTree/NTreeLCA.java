@@ -1,4 +1,6 @@
-package AmazonOA;
+package NaryTree;
+
+import NaryTree.NTreeNode;
 
 /**
  * Created by xhu on 4/14/17.

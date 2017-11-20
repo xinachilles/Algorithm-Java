@@ -32,7 +32,7 @@ public class FactorCombinations {
         for (int i = start; i <= n; i++) {
             if (n % i == 0) {
                 solution.add(i);
-                getFactorsHelper(n/i, result, solution,i+1);
+                getFactorsHelper(n/i, result, solution,i);
                 solution.remove(solution.size() - 1);
             }
         }

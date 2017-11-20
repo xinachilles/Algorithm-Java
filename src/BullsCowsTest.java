@@ -9,7 +9,7 @@ public class BullsCowsTest {
     @Test
     public void getHit() throws Exception {
         BullsCows target = new BullsCows();
-        target.getHit("1807","7810");
+        target.getHint("1807","7810");
     }
 
 }

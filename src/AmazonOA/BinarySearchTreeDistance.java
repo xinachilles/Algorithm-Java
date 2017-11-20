@@ -5,7 +5,7 @@ package AmazonOA;
  */
 public class BinarySearchTreeDistance {
 
-    public int Distance(int[] array, int a, int b)
+   public int Distance(int[] array, int a, int b)
     {
         if (array == null || array.length == 0)
         {
@@ -19,7 +19,7 @@ public class BinarySearchTreeDistance {
             insertToBinarySearchTree(array[i], root);
         }
 
-        int min = Math.min(a, b);
+       /* int min = Math.min(a, b);
         int max = Math.max(a, b);
         int distance1 = -1;
         int distance2 = -1;
@@ -44,10 +44,11 @@ public class BinarySearchTreeDistance {
             return -1;
         }
 
-        return distance1 + distance2;
+        return distance1 + distance2;*/
+       return lowestCommonAncestor3(root, new TreeNode(a), new TreeNode(b));
 
     }
-
+/*
     private TreeNode getCommonLCA(TreeNode root, int a, int b, int min, int max)
     {
         if (root == null)
@@ -98,7 +99,53 @@ public class BinarySearchTreeDistance {
 
         return isFind ? step-1 : -1;
 
+    }*/
+
+    class ResultType {
+        public int distance_a = Integer.MAX_VALUE;
+        public int distance_b = Integer.MAX_VALUE;
+
+
+        public ResultType(int distance_a, int distance_b) {
+            this.distance_a = distance_a;
+            this.distance_b = distance_b;
+
+        }
     }
+
+    public int lowestCommonAncestor3(TreeNode root, TreeNode a, TreeNode b) {
+        ResultType res = helper(root, a, b);
+        if (res.distance_a == Integer.MAX_VALUE || res.distance_b == Integer.MAX_VALUE ) {//return node only when two nodes found
+            return Integer.MAX_VALUE;
+        }
+        return res.distance_b+res.distance_a-1;
+    }
+
+    private ResultType helper(TreeNode root, TreeNode a, TreeNode b) {
+        if (root == null) {
+            return new ResultType(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        }
+
+        ResultType left = helper(root.left, a, b);
+        ResultType right = helper(root.right, a, b);
+        int  distance_a = left.distance_a == Integer.MAX_VALUE? right.distance_a: left.distance_a;
+        int  distance_b = left.distance_b == Integer.MAX_VALUE? right.distance_b : right.distance_b;
+
+        if(root.compareTo(a) ==0 ){
+            return  new ResultType(0,distance_b==Integer.MAX_VALUE? Integer.MAX_VALUE:distance_b+1);
+        }
+
+        if(root.compareTo(b) == 0){
+            return  new ResultType(distance_a==Integer.MAX_VALUE? Integer.MAX_VALUE:distance_a+1,0);
+        }
+
+            return  new ResultType(distance_a==Integer.MAX_VALUE? Integer.MAX_VALUE:distance_a+1,distance_b==Integer.MAX_VALUE? Integer.MAX_VALUE:distance_b+1);
+        }
+
+
+
+
+
 
 
     private void insertToBinarySearchTree(int number, TreeNode root)

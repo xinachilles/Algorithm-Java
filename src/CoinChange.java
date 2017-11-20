@@ -14,39 +14,26 @@ public class CoinChange {
         }
 
         int[] dp = new int[amount + 1];
-        HashSet<Integer> coinSet = new HashSet<Integer>();
 
-        for (int c : coins)
-        {
-            coinSet.add(c);
-        }
-
-        for (int i = 1; i <= amount; i++)
-        {
-            dp[i] = Integer.MAX_VALUE;
-        }
 
         dp[0] = 0;
         //dp[i] means the fewest number of conin to make up the amount i
 
         for (int i = 1; i <= amount; i++)
         {
-            if (coinSet.contains(i))
-            {
-                dp[i] = 1;
-            }
-            else
-            {
-                for (int c : coinSet)
+                int count = Integer.MAX_VALUE;
+                for (int c : coins)
                 {
-                    if (i >= c && dp[i-c ] < Integer.MAX_VALUE && dp[i - c] + 1 < dp[i])
+                    if (i >= c && dp[i - c] + 1 < count)
                     {
-                        dp[i] = dp[i - c] + 1;
+                        count = dp[i - c] + 1;
                     }
                 }
 
+                dp[i] = count;
+
             }
-        }
+
 
 
         return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];

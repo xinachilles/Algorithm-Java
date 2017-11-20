@@ -1,4 +1,6 @@
-package AmazonOA;
+package NaryTree;
+
+import NaryTree.NTreeNode;
 
 import java.util.*;
 
@@ -6,7 +8,7 @@ import java.util.*;
  * Created by xhu on 6/6/17.
  */
 public class NTreeTransfer {
-    public  NTreeNode Transfer(NTreeNode node, int k){
+    public NTreeNode Transfer(NTreeNode node, int k){
         List<NTreeNode> visted  = new ArrayList<>();
         Queue<NTreeNode> toVisted = new LinkedList<>();
         toVisted.offer(node);

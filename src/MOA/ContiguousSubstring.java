@@ -31,5 +31,8 @@ public class ContiguousSubstring {
                 helper(s,result,String.valueOf(s.charAt(i)),index+1);
             }
         }
+
+
+
     }
 }

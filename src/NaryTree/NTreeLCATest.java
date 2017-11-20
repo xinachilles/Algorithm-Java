@@ -1,8 +1,6 @@
-package AmazonOA;
+package NaryTree;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by xhu on 4/14/17.
