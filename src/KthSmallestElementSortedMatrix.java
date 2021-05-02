@@ -6,6 +6,17 @@ import java.util.PriorityQueue;
 
 
 public class KthSmallestElementSortedMatrix {
+    class Position{
+        int row;
+        int col;
+        int val;
+
+        public Position(int row, int col,int value){
+            this.row = row;
+            this.col = col;
+            this.val = value;
+        }
+    }
     public int kthSmallest(int[][] matrix, int k) {
         if (matrix == null || matrix.length == 0) {
             return 0;

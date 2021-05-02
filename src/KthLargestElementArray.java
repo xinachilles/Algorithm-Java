@@ -1,8 +1,10 @@
+import java.util.Random;
+
 /**
  * Created by xhu on 1/15/17.
  */
 public class KthLargestElementArray {
-
+    Random random = new Random();
     public int findKthLargest(int[] nums, int k) {
         if (nums == null || nums.length == 0) {
             return 0;
@@ -16,20 +18,23 @@ public class KthLargestElementArray {
            return nums[start];
        }
 
+       int r = random.nextInt(end-start+1)+start;
+       change(start, r,nums);
+
         int povit = nums[start];
         int lo = start + 1;
         int hi = end;
 
-        while (lo < hi) {
-            while (lo < hi && nums[lo] <= povit) {
+        while (lo <= hi) {
+            while (lo <= hi && nums[lo] <= povit) {
                 lo++;
             }
 
-            while (lo < hi && nums[hi] > povit) {
+            while (lo <= hi && nums[hi] > povit) {
                 hi--;
             }
 
-            if (lo < hi) {
+            if (lo <= hi) {
                 change(lo, hi, nums);
                 lo++;
                 hi--;

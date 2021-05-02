@@ -1,40 +1,39 @@
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Queue;
 
 /**
  * Created by xhu on 10/23/16.
  */
 public class HappyNumber {
-    // happy number
-    public Boolean isHappy(int n) {
-        HashSet<Integer> index = new HashSet<Integer>();
-
-        index.add(n);
-        while (true) {
-            int happy = CalHappyNumber(n);
-            if (happy == 1) {
+    public boolean isHappy(int n) {
+        HashSet<Integer> nums = new HashSet<>();
+        nums.add(n);
+        while(true){
+            n = calDigital(n);
+            if(n == 1){
                 return true;
             }
 
-            if (index.contains(happy)) {
+            if(nums.contains(n)){
                 return false;
+            }else{
+                nums.add(n);
             }
-
-            index.add(happy);
-            n = happy;
         }
     }
 
-    private int CalHappyNumber(int n) {
-
+    private int calDigital(int n){
         int result = 0;
-        while (n > 0) {
-            int a = n % 10;
-            result = result + a * a;
-            n = n / 10;
-
+        while(n>0){
+            int a = n /10;
+            result = result + a*a;
+            n = n%10;
         }
 
         return result;
     }
+
+
 
 }

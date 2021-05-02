@@ -9,7 +9,7 @@ public class RemoveKDigitsTest {
     @Test
     public void removeKdigits() throws Exception {
         RemoveKDigits target = new RemoveKDigits();
-        target.removeKdigits("12",2);
+        target.removeKdigits("1432219" , 3);
     }
 
 }

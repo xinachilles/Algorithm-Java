@@ -7,34 +7,36 @@ import java.util.Map;
  */
 public class LongestPalindrome {
 
-    public int longestPalindrome(String s) {
+    public String longestPalindrome(String s) {
         if (s == null || s.length() == 0) {
-            return 0;
+            return s;
         }
 
-        Map<Character, Integer> counts = new HashMap<>();
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        // dp[i,j] mean the  palidromic string from substring index i to index j is palidromic or not
+        int max = 1;
+        String result = String.valueOf(s.charAt(0));
 
-        for (Character c : s.toCharArray()) {
-            if (counts.containsKey(c)) {
-                counts.put(c, counts.get(c) + 1);
-            } else {
-                counts.put(c, 1);
+        for (int start = s.length() - 1; start >= 0; start--) {
+            for (int end = start; end < s.length(); end++) {
+                if (s.charAt(start) == s.charAt(end)){
+                    {
+                        if (end - start + 1 <= 3 || end - start + 1 > 3 && dp[start + 1][end - 1]) {
+                            dp[start][end] = true;
+                        }
+                    }
+
+                    if (dp[start][end]) {
+                       if(end-start+1>max){
+                           max = end-start+1;
+                           result = s.substring(start,end+1);
+                       }
+                    }
+                }
             }
         }
-        int length = 0;
-        int odd = 0;
-        for (Character key : counts.keySet()) {
 
-
-            if (counts.get(key) % 2 == 0) {
-                length += counts.get(key);
-            } else {
-                length += counts.get(key) - 1;
-                odd++;
-            }
-
-        }
-
-        return odd > 0 ? length + 1 : length;
+        return result;
     }
 }
+

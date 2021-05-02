@@ -19,30 +19,35 @@ public class CourseScheduleDFS {
             graph.get(first).add(second);
         }
 
-        int[] visited = new int[numCourses];
+        Set<Integer> visited = new HashSet<Integer>();
         for (int i = 0; i < numCourses; i++) {
-            if (visited[i] ==0) {
+            if (!visited.contains(i)) {
                 if (hasCycle(graph, visited, i)) {
                     return false;
                 }
             }
         }
+        return (visited.size()==numCourses);
 
-        return true;
     }
 
-    private boolean hasCycle(Map<Integer, List<Integer>> graph, int[] visited, int course) {
-        visited[course] = 1;
+    private boolean hasCycle(Map<Integer, List<Integer>> graph, Set<Integer>visited, int course) {
+
+        if (visited.contains(course)){
+            return true;
+        }
+
+        visited.add(course);
         boolean hasCycle = false;
         for (int next : graph.get(course)) {
-            if (visited[next] == 1) {
+            if (visited.contains(next)) {
                 return true;
             } else {
                 hasCycle = hasCycle || hasCycle(graph, visited, next);
             }
         }
 
-        visited[course] = 2;
+
         return hasCycle;
     }
 }

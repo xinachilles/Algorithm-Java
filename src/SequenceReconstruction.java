@@ -4,81 +4,45 @@ import java.util.*;
  * Created by xhu on 12/30/16.
  */
 public class SequenceReconstruction {
-    public Boolean sequenceReconstruction(int[] org, int[][] seqs) {
+    public boolean sequenceReconstruction(int[] org, List<List<Integer>> seqs) {
         if (org == null || seqs == null) {
             return true;
         }
 
         Map<Integer, List<Integer>> graph = new HashMap<>();
-        Map<Integer, Integer> indegree = new HashMap<>();
-
-        for (int n : org) {
-            indegree.put(n, 0);
-        }
-
-        for (int[] seq : seqs) {
-            if (seq.length == 1) {
-                if (graph.get(seq[0]) == null) {
-                    graph.put(seq[0], new ArrayList<>());
+        for (List<Integer> seq : seqs) {
+            if(seq.size() ==1){
+                graph.put(seq.get(0),new ArrayList<>());
+            }else {
+                for (int i = 1; i < seq.size(); i++) {
+                    int node = seq.get(i-1);
+                    int neighbor = seq.get(i);
+                    if(node == neighbor) return  false;
+                    if(graph.containsKey(neighbor) && graph.get(neighbor).contains(node)){
+                        return false;
+                    }
+                    graph.computeIfAbsent(node, k -> new ArrayList<>()).add(neighbor);
                 }
             }
-
-            for (int i = 1; i < seq.length; i++) {
-                int node = seq[i - 1];
-                int neighbor = seq[i];
-
-                if (graph.get(node) == null) {
-                    graph.put(node, new ArrayList<>());
-                }
-
-                if(!indegree.containsKey(neighbor)){
-                    return false;
-                }
-                indegree.put(neighbor, indegree.get(neighbor) + 1);
-                graph.get(node).add(neighbor);
-
-            }
         }
-        if(graph.keySet().size() !=indegree.size()){
+       
+        return Dfs(org,graph,0);
+
+    }
+
+    private boolean Dfs(int[]org, Map<Integer,List<Integer>>graph,int index){
+        if(index == org.length){
+            return true;
+        }
+        int node = org[index];
+        if(!graph.containsKey(node)){
             return false;
         }
-
-        Queue<Integer> visting = new LinkedList<>();
-
-        for (int key : indegree.keySet()) {
-            if (indegree.get(key) == 0) {
-                visting.offer(key);
-            }
+        if(index+1<org.length && !graph.get(node).contains(org[index+1])){
+            return  false;
         }
 
-
-        int index = 0;
-        while (!visting.isEmpty()) {
-            if(visting.size()>1){
-                return false;
-            }
-            if (index >= org.length) {
-                return false;
-            }
-            int current = visting.poll();
-            if (current != org[index]) {
-                return false;
-            }
-
-            if(graph.get(current)!=null) {
-                for (int i : graph.get(current)) {
-                    indegree.put(i, indegree.get(i) - 1);
-                    if (indegree.get(i) == 0) {
-                        visting.offer(i);
-                    }
-                }
-            }
-            index++;
-        }
-
-        return index == org.length;
-
-
+        return Dfs(org,graph,index+1);
     }
 
 

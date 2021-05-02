@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by xhu on 11/10/16.
@@ -21,75 +18,63 @@ public class PalindromePermutationII {
 
         // count the number of each character in the S
 
-        Map<Character, Integer> mapping = new HashMap<>();
+        int[] mapping = new int[26];
 
-        for (Character c : s.toCharArray()) {
-            if (!mapping.containsKey(c)) {
-                mapping.put(c, 1);
-            } else {
-                mapping.put(c, mapping.get(c) + 1);
-            }
+        for (char c : s.toCharArray()) {
+            mapping[c-'a']++;
         }
 
         char mid = '\0';
-        Character[] keys = new Character[s.length() / 2];
+        char[] keys = new char[s.length() / 2];
         int index = 0;
-        for (Character key : mapping.keySet()) {
-
-            if (mapping.get(key) % 2 != 0) {
-                if (mid != '\0') {
-                    return result;
+        for(int i = 0; i<26; i++){
+            if(mapping[i] >0 ){
+                if (mapping[i] % 2 != 0) {
+                    if (mid != '\0') {
+                        return result;
+                    }
+                    mid = (char)(i+'a');
                 }
-
-                mid = key;
+                for (int j = 0; j < mapping[i]/ 2; j++) {
+                    keys[index++] = (char)(i+'a');
+                }
             }
-
-            for (int i = 0; i < mapping.get(key) / 2; i++) {
-                keys[index++] = key;
-
-            }
-
         }
 
         List<String> half = new ArrayList<>();
-        Permutation(keys, new boolean[keys.length], "", half);
-
-        for (String h : half) {
-            StringBuilder whole = new StringBuilder();
-            if (mid != '\0') {
-                whole.append(h + mid + new StringBuilder(h).reverse().toString());
-
-            } else {
-                whole.append(h + new StringBuilder(h).reverse().toString());
-            }
-
-            if(!result.contains(whole.toString())){
-                result.add(whole.toString());
-            }
-
-        }
+        Permutation(keys,half,0, mid);
 
         return result;
+    }
 
+    private void Permutation(char[] keys, List<String> result,int index, char mid) {
+        if (index == keys.length) {
+            result.add(buildResult(new String(keys),mid));
+            return;
+        }
+        Set<Character> used = new HashSet<Character>();
+        for(int i = index; i<keys.length; i++){
+            if(!used.contains(keys[i])) {
+                used.add(keys[i]);
+                swap(keys, index, i);
+                Permutation(keys, result, i + 1,mid);
+                swap(keys, i, index);
+            }
+        }
 
     }
 
+    private void swap(char[] keys, int a, int b){
+        Character temp = keys[a];
+        keys[a] = keys[b];
+        keys[b] = temp;
+    }
+    private String buildResult(String s, char mid ){
+        if (mid != '\0') {
+            return s + mid + new StringBuilder(s).reverse().toString();
 
-    private void Permutation(Character[] keys, boolean[] visited, String solution, List<String> result) {
-        if (solution.length() == keys.length) {
-            result.add(solution);
-            return;
+        } else {
+            return s + new StringBuilder(s).reverse().toString();
         }
-
-        for (int i = 0; i < keys.length; i++) {
-            if (visited[i]) {
-                continue;
-            }
-
-            visited[i] = true;
-            Permutation(keys, visited, solution.length() == 0 ? String.valueOf(keys[i]) : solution + keys[i], result);
-            visited[i] = false;
-        }
-
     }
 }

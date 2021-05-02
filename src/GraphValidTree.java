@@ -17,7 +17,7 @@ public class GraphValidTree {
 
 
         Map<Integer, List<Integer>> graph = new HashMap<>();
-
+        
         for (int i = 0; i < n; i++) {
             graph.put(i, new ArrayList<>());
         }
@@ -28,51 +28,49 @@ public class GraphValidTree {
 
             graph.get(node1).add(node2);
             graph.get(node2).add(node1);
+
         }
 
         int[] state = new int[n];
+        for(int i  =0; i<n;i++){
+            if(state[i] ==0){
+                Queue<Integer> visting = new LinkedList<>();
+                state[i] = 1;
+                visting.offer(i);
 
-        for (int node : graph.keySet()) {
-            if (state[node] != 2) {
-                if (hasCycleBFS(graph, state, node)) {
-                    return false;
+                while (!visting.isEmpty()) {
+                    int current = visting.poll();
+                    if(!graph.containsKey(i)) continue;
+
+                    for (int child : graph.get(i)) {
+                        if (state[child] == 2) {
+                            continue;
+                        }
+
+                        if (state[child] == 1) {
+                            return false;
+                        }
+
+                        state[child] = 1;
+                        visting.offer(child);
+                    }
+
+                    state[i] = 2;
+
                 }
+
+                return false;
             }
         }
+
+
 
         return true;
+
+        
     }
 
-    private boolean hasCycleBFS(Map<Integer, List<Integer>> graph, int[] state, int node) {
-        Queue<Integer> visting = new LinkedList<>();
-        state[node] = 1;
-        visting.offer(node);
 
-        while (!visting.isEmpty()) {
-            int current = visting.poll();
-            // find cycle
-
-            for (int child : graph.get(node)) {
-                if (state[child] == 2) {
-                    continue;
-                }
-
-                if (state[child] == 1) {
-                    return true;
-                }
-
-                state[child] = 1;
-                visting.offer(child);
-            }
-
-            state[node] = 2;
-
-        }
-
-        return false;
-
-
-    }
 
 
 }

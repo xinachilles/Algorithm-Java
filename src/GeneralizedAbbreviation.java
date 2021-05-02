@@ -6,34 +6,35 @@ import java.util.List;
  */
 public class GeneralizedAbbreviation {
     //Generalized Abbreviation
-
+    List<String> result = new ArrayList<>();
     public List<String> generateAbbreviations(String word)
     {
-        List<String> result = new ArrayList<>();
         if (word == null || word.length() == 0)
         {
             return result;
         }
 
-        generateAbbreviationsHelper(word, result, 0,"", 0);
+        generateAbbreviationsHelper(word, new StringBuilder(),0,0);
         return result;
     }
 
-    private void generateAbbreviationsHelper(String word, List<String> result, int index, String cur, int count) {
+    private void generateAbbreviationsHelper(String word, StringBuilder curr, int index, int count) {
         if (index == word.length())
         {
-            if(count>0) {
-                cur = cur + String.valueOf(count);
-            }
-            result.add(cur);
+
+            result.add(word);
             return;
         }
+        // constructed by number
+        // previus is number
+        if(index>0 && Character.isDigit(curr.charAt(curr.length()-1))){
+           // generateAbbreviationsHelper(word, curr.setCharAt(curr.length()-1,(char)(count -'0')),index+1,0);
+        }else{
 
+        }
 
-
-            generateAbbreviationsHelper(word, result, index + 1, "", count + 1);
-            generateAbbreviationsHelper(word,result,index+1,cur+ (count>0 ? String.valueOf(count):"")+word.charAt(index),0);
-
+        // ornot
+        generateAbbreviationsHelper(word, curr.append(word.charAt(index)),index+1,0);
 
     }
 }

@@ -61,26 +61,32 @@ public class RegularExpressionMatching {
 
         boolean[][] dp = new boolean[s.length()][p.length()];
 
-
+        // for inital, if s is empty and j is empty the dp[0][0] is true
         dp[0][0] = true;
-
-        for (int i = 0; i < p.length(); i++) {
-            if (p.charAt(i) == '*') {
-                dp[0][i] = true;
-            } else {
-                break;
+        // if j is empty then dp[i][0] is always false
+        // if i is empty then dp[0][j] is = dp[0][j-2] means j take 0 occurance
+        // for example s = "" and p ="a*b*"
+        // when we see *, we look at 2 poistion before
+        for (int j = 0; j < p.length(); j++) {
+            if (p.charAt(j) == '*') {
+                dp[0][j + 1] = (j >= 1 && dp[0][j - 1]);
             }
         }
 
 
         for (int i = 0; i < s.length(); i++) {
             for (int j = 0; j < p.length(); j++) {
-                if (p.charAt(i) != '*' && s.charAt(i) == p.charAt(j) || p.charAt(j) == '.') {
+                // if p[i] is not start and if p[i] == s[i], we will look at the diagonal value
+                if (p.charAt(j) != '*' && s.charAt(i) == p.charAt(j) || p.charAt(j) == '.') {
                     dp[i + 1][j + 1] = dp[i][j];
                 }
 
-                if (p.charAt(i) == '*') {
-                    dp[i + 1][j + 1] = dp[i][j] || dp[i - 1][j] || dp[i][j - 1];
+                if (p.charAt(j) == '*') {
+                    // if p[i] is *, we can gook at the 2 poistion, 2 entry before
+                    // or if p[i-1] equal to s[i], we just need look at it's up entry
+
+                    dp[i + 1][j + 1] = (j>=1 && dp[i][j - 1]) // 0 occurance
+                            || (j>=1&& (s.charAt(i) == p.charAt(j-1) || p.charAt(j-1) == '.') && dp[i][j + 1]);
                 }
             }
         }

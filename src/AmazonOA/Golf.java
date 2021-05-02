@@ -4,17 +4,8 @@ import java.util.*;
 
 public class Golf {
 
-    private class newComapre implements Comparator<int[]> {
-
-        @Override
-        public int compare(int[] o1, int[] o2) {
-            return o1[0] - o2[0];
-        }
-    }
-
-
     public int cutOffTree(List<List<Integer>> forest) {
-        List<int[]> trees = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
 
         int row = forest.size();
         int col = forest.get(0).size();
@@ -24,11 +15,11 @@ public class Golf {
             for (int c = 0; c < forest.get(r).size(); ++c) {
 
                 int v = forest.get(r).get(c);
-                if (v > 1) trees.add(new int[]{v, r, c});
+                if (v > 1) values.add(v);
             }
         }
 
-        Collections.sort(trees, new newComapre());
+        Collections.sort(values);
         int[][] source = {new int[]{0, 0}, new int[]{0, col - 1}, new int[]{row - 1, 0}, new int[]{row - 1, col - 1}};
 
 
@@ -47,9 +38,9 @@ public class Golf {
             }
 
 
-            for (int[] tree : trees) {
+            for (int v : values) {
 
-                int[] d = distance(temp, sr, sc, tree[0], row, col);
+                int[] d = distance(temp, sr, sc, v, row, col);
                 if (d[0] < 0) {
 
                     ans = Integer.MAX_VALUE;

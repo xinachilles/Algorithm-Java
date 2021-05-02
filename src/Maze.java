@@ -1,79 +1,54 @@
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 
 /**
  * Created by xhu on 3/4/17.
  */
 public class Maze {
+    int[][]moves=  new int[][]{{1,0},{-1,0},{0,1},{0,-1}};
+    int rows = 0;
+    int cols = 0;
+    boolean[][]visited;
 
-
-    //maze I
-  /*  public boolean hasPath(int[][] maze, int[] start, int[] destination){
-        if(maze == null || start == null || destination == null){
+    public boolean hasPath(int[][] maze, int[] start, int[] destination) {
+        if (maze == null || start == null || destination == null) {
             return false;
         }
-        int rowStart = start[0];
-        int colStart = start[1];
+        rows = maze.length;
+        cols = maze[0].length;
 
-        int rowDestionation = destination[0];
-        int colDestionation = destination[1];
-        boolean[][] visited = new boolean[maze.length][maze[0].length];
-
-        return hasPathHelper(maze, rowStart,colStart, rowDestionation,colDestionation, visited);
-
-
-
+        visited = new boolean[rows][cols];
+        return helper(maze, start[0],start[1],destination);
     }
 
-    private boolean hasPathHelper(int[][] maze, int rowStart, int colStart, int rowDestionation, int colDestionation, boolean[][] visited){
-        if(rowStart == rowDestionation && colStart == colDestionation){
+    private boolean helper(int[][] maze, int row, int col, int[] dest) {
+
+        if (row == dest[0] && col == dest[1]) {
             return true;
         }
 
-        if(rowStart< 0 || rowStart>maze.length || colStart<0 || colStart>maze[0].length){
-            return false;
-        }
+        if (visited[row][col]) return false;
+        visited[row][col] = true;
 
-        if(visited[rowStart][colStart]){
-            return false;
-        }
+        for(int i = 0; i<moves.length;i++){
+            int r = row;
+            int c = col;
 
-        if(maze[rowStart][colStart] == 1){
-            return false;
-        }
-
-       visited[rowStart][colStart] = true;
-
-        // up
-
-        if (rowStart-1 >= 0 && maze[rowStart-1][colStart] != 1 && !visited[rowStart-1][colStart]) {
-
-
-            if(hasPathHelper(maze,rowStart-1,colStart,rowDestionation,colDestionation,visited)){
-                return true;
+            while (!outBound(r+moves[i][0],c+moves[i][1]) && maze[r+moves[i][0]][c+moves[i][1]] != 1) {
+                r+=moves[i][0];
+                c+=moves[i][1];
             }
+            if (helper(maze, r,c, dest)) return true;
+
         }
+    return false;
+    }
 
-        // down
-        if (rowStart+1<maze.length && maze[rowStart+1][colStart] != 1 && !visited[rowStart+1][colStart]) {
-            int i = rowStart + 1;
-
-            if(hasPathHelper(maze,i,colStart,rowDestionation,colDestionation,visited)){
-                return true;
-            }
-        }
-
-        // left
-        if (colStart-1< && maze[rowStart+1][colStart] != 1 && !visited[rowStart+1][colStart]) {
-            int i = rowStart + 1;
-
-            if(hasPathHelper(maze,i,colStart,rowDestionation,colDestionation,visited)){
-                return true;
-            }
-        }
+    private boolean outBound(int row, int col){
+        return (row<0 || row>=rows || col<0 || col>=cols);
+    }
 
 
-        return (left || right|| up||down);
-
-    }*/
 }

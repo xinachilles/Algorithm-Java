@@ -6,20 +6,18 @@ import java.util.Stack;
 public class RemoveKDigits {
     public String removeKdigits(String num, int k) {
         if(num == null || num.length() == 0){
-            return "0";
+            return num;
         }
 
-
-        Stack<Integer> stack = new Stack<Integer>();
-        for(int i = 0; i<num.length();i++){
-            int current = num.charAt(i) - '0';
-
-            while(!stack.isEmpty() && stack.peek()>current && k>0){
+        // keep a stack and the number in the stack is sorted by descending order
+        Stack<Integer> stack = new Stack<>();
+        int i = 0;
+        for(; i<num.length() && k>0; i++){
+            int n = num.charAt(i) - '0';
+            while(!stack.isEmpty() && stack.peek()>=n){
                 stack.pop();
                 k--;
             }
-
-            stack.push(current);
         }
 
         while(k>0 && !stack.isEmpty()){
@@ -29,16 +27,18 @@ public class RemoveKDigits {
 
         String result = "";
         while(!stack.isEmpty()){
-            result = String.valueOf(stack.pop())+result;
+            result =  String.valueOf(stack.pop())+result;
         }
 
-        int i = 0;
-        for(; i<result.length(); i++){
-            if(result.charAt(i) != '0'){
+        int j = 0;
+        while(j<result.length()){
+            if(result.charAt(j)!='0'){
                 break;
             }
+
+            j++;
         }
 
-        return result.trim().length() == 0 ? "0": result.substring(i,result.length());
+        return result.substring(j,result.length())+num.substring(i,num.length());
     }
 }

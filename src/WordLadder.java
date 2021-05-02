@@ -4,83 +4,54 @@ import java.util.*;
  * Created by xhu on 1/4/17.
  */
 public class WordLadder {
-
-
-
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        if (beginWord == null || endWord == null || wordList == null || !wordList.contains(endWord)) {
+        if (beginWord == null || endWord == null || wordList == null) {
             return 0;
         }
 
-        Set<String> dict = new HashSet<>(wordList);
-        Set<String> startSet = new HashSet<>();
+        Set<String> beginSet = new HashSet<>();
         Set<String> endSet = new HashSet<>();
 
-        startSet.add(beginWord);
+        beginSet.add(beginWord);
         endSet.add(endWord);
+        wordList.remove(beginWord);
+        wordList.remove(endWord);
 
-        dict.remove(beginWord);
-        dict.remove(endWord);
-
-        return BFS(2, dict, startSet, endSet);
-
-
-    }
-
-    private int BFS(int step, Set<String> wordList, Set<String> startSet, Set<String> endSet) {
-
-        Set<String> nextStep = new HashSet<>();
-        for (String word : startSet) {
-
-            List<String> next = GenerateNext(word, wordList);
-            for (String n : next) {
-                if (endSet.contains(n)) {
+        int step = 1;
+        while (!beginSet.isEmpty()) {
+            Set<String> temp = new HashSet<>();
+            for (String word : beginSet) {
+                if (endSet.contains(word)) {
                     return step;
                 }
 
-                nextStep.add(n);
+                for (int j = 0; j < word.length(); j++) {
+                    for (char a = 'a'; a <= 'z'; a++) {
+                        if (a == word.charAt(j)) {
+                            continue;
+                        }
+                        String new_word =word.substring(0, j) + a + word.substring(j + 1, word.length());
+                        if(wordList.contains(new_word)){
+                            temp.add(new_word);
+                            wordList.remove(new_word);
+                        }
+
+                    }
+                }
             }
-
-        }
-
-        if (nextStep.size() == 0) return 0;
-
-        if (nextStep.size() <= endSet.size()) {
-            return BFS(step + 1, wordList, nextStep, endSet);
-        } else {
-            return BFS(step + 1, wordList, endSet, nextStep);
-        }
-
-    }
-
-    private List<String> GenerateNext(String word, Set<String> wordList) {
-        List<String> result = new ArrayList<>();
-        for (char c = 'a'; c <= 'z'; c++) {
-            for (int i = 0; i < word.length(); i++) {
-                if (word.charAt(i) == c) {
-                    continue;
-                }
-
-                String newWord = replace(word, i, c);
-                if (wordList.contains(newWord)) {
-                    wordList.remove(newWord);
-                    result.add(newWord);
-                }
-
-
+            step++;
+            if(endSet.size()> temp.size()) {
+                beginSet = endSet;
+                endSet = temp;
+            }else {
+                beginSet = temp;
             }
         }
-        return result;
+        return  -1;
+    }
     }
 
 
-    private String replace(String word, int index, char c) {
-        char[] temp = word.toCharArray();
-        temp[index] = c;
-        return String.valueOf(temp);
-
-    }
-    }
 
 
 

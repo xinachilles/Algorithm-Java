@@ -59,44 +59,34 @@ public class ExpressionAddOperators {
         }
 
         String[] operations = new String[]{"+", "-", "*"};
-        helper(num, "", operations, 0, target, 0, 0, result);
+        helper(num, "", 0, target, 0, 0, result);
         return result;
     }
 
-    private void helper(String num, String solution, String[] operations, int start, int target, float sum, float previous, List<String> result) {
-        if (target == sum) {
-            if (solution.length() > 0 && !result.contains(solution)) {
-                result.add(solution);
+    private void helper(String num, String solution, int index, int target, int sum, int previous, List<String> result) {
+        if (index == num.length()) {
+            if (target == sum) {
+                if (solution.length() > 0 && !result.contains(solution)) {
+                    result.add(solution);
+                }
             }
-
             return;
         }
 
-        for (int i = 1; i + start <=num.length(); i++) {
 
-            String substring = num.substring(start, i + start);
-            if(substring.length()>1 && substring.charAt(0) =='0'){
-                continue;
-            }
-            float value = Float.valueOf(substring);
-            if (solution.length() == 0) {
-                helper(num, substring, operations, i + start, target, value, value, result);
-            } else {
+        int value = num.charAt(index)-'0';
+        if (solution.length() == 0) {
+            helper(num, Character.toString(num.charAt(index)), index++, target, value, value, result);
+        } else {
+            helper(num, solution + "-" + Character.toString(num.charAt(index)), index+1, target, sum - value, -value, result);
+            helper(num, solution + "+" + Character.toString(num.charAt(index)), index+1, target, sum + value, value, result);
+            helper(num, solution + "*" + Character.toString(num.charAt(index)), index+1, target, sum - previous + value * previous, value * previous, result);
 
-                for (int k = 0; k < operations.length; k++) {
-
-                    if (operations[k] == "-") {
-                        helper(num, solution + operations[k] + substring, operations, i + start, target, sum - value, -value, result);
-                    } else if (operations[k] == "+") {
-                        helper(num, solution + operations[k] + substring, operations, i + start, target, sum + value, value, result);
-                    } else {
-                        helper(num, solution + operations[k] + substring, operations, i + start, target, sum - previous + value * previous, value*previous, result);
-                    }
-
-                }
-            }
 
         }
     }
+
 }
+
+
 

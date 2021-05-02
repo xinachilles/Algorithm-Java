@@ -6,6 +6,7 @@ import java.util.List;
  */
 public class InsertInterval {
     //insert interval
+    /*
     public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
 
         List<Interval> result = new ArrayList<>();
@@ -39,5 +40,36 @@ public class InsertInterval {
 
         return result;
     }
+    */
 
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        if (newInterval == null || newInterval.length == 0) {
+            return intervals;
+        }
+
+        List<int[]> result = new ArrayList<>();
+        int start = newInterval[0];
+        int end = newInterval[1];
+        int i = 0;
+        for (; i < intervals.length; i++) {
+
+            if (intervals[i][1] < start) {
+                result.add(intervals[i]);
+            } else if (end >= intervals[i][1]) {
+                start = Math.min(intervals[i][0], start);
+                end = Math.max(intervals[i][1], end);
+            } else {
+                break;
+            }
+
+        }
+
+        result.add(new int[]{start, end});
+        for (int j = i; i < intervals.length; i++) {
+            result.add(intervals[j]);
+        }
+
+        return result.toArray(new int[result.size()][2]);
+
+    }
 }

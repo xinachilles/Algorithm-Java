@@ -1,106 +1,91 @@
+import sun.tools.jconsole.inspector.XNodeInfo;
+
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
-/*
-public class LRUCache {
-
-    public class ListNode {
-        ListNode next;
-        ListNode pre;
+class LRUCache {
+    class ListNode{
         int value;
         int key;
+        ListNode next;
+        ListNode previous;
 
-        public ListNode(int key,int value) {
+        public ListNode(int key,int value){
             this.value = value;
             this.key = key;
         }
-
-
     }
-
-    private Map<Integer, ListNode> space;
-    private int maxCapcity;
-
-
-    private ListNode head;
-    private ListNode tail;
+    int capacity;
+    int size;
+    ListNode head;
+    ListNode tail;
+    HashMap<Integer,ListNode> maps;
 
     public LRUCache(int capacity) {
 
-        this.maxCapcity = capacity;
-        space = new HashMap<>();
-        head = new ListNode(-1,-1);
-        tail = new ListNode(-1,-1);
-
+        this.capacity = capacity;
+        size  = 0;
+        head = new ListNode(Integer.MAX_VALUE,Integer.MAX_VALUE);
+        tail = new ListNode(Integer.MAX_VALUE,Integer.MAX_VALUE);
         head.next = tail;
-        tail.pre = head;
-
-
-
+        tail.previous = head;
+        maps = new HashMap<>();
 
     }
 
     public int get(int key) {
-        if (!space.containsKey(key)) {
+        if(!maps.containsKey(key)){
             return -1;
         }
 
-        ListNode node = space.get(key);
-        moveNodeToTail(node);
-        return space.get(key).value;
-
+        int value = maps.get(key).value;
+        moveToHead(maps.get(key));
+        return value;
     }
 
     public void put(int key, int value) {
-        if (space.containsKey(key)) {
-            space.get(key).value = value;
-            moveNodeToTail(space.get(key));
-            return;
-
-        }
-
-        ListNode insert = new ListNode(key,value);
-        space.put(key, insert);
-        moveNodeToTail(insert);
-
-        if (space.size() > maxCapcity) {
-
-            space.remove(head.next.key);
-            removeHeader();
+        if(maps.containsKey(key)){
+            maps.get(key).value = value;
+            moveToHead(maps.get(key));
 
         }
 
 
+        size++;
+        if(size> capacity){
+            int removeKey = removeTail();
+            maps.remove(removeKey);
+
+        }
+
+        ListNode node = new ListNode(key,value);
+        maps.put(key,node);
+        addToHead(node);
+
     }
 
-    private void removeHeader() {
-        head.next = head.next.next;
-        head.next.pre = head;
+    private int removeTail(){
+        ListNode remove = tail.previous;
+        tail.previous = remove.previous;
+        remove.previous.next = tail;
+
+        return remove.key;
+    }
+    private void addToHead(ListNode node){
+        ListNode next = head.next;
+        head.next = node;
+        node.previous = head;
+
+        node.next = next;
+        next.previous = node;
     }
 
-
-
-    private void moveNodeToTail(ListNode node) {
-
-
-        ListNode pre = node.pre;
+    private void moveToHead(ListNode node){
         ListNode next = node.next;
+        ListNode previous  = node.previous;
 
-        if (pre != null) pre.next = next;
-        if (next != null) next.pre = pre;
+        next.previous = previous;
+        previous.next = next;
 
-
-
-        node.pre = tail.pre;
-        node.pre.next = node;
-
-        node.next = tail;
-        tail.pre  = node;
-
-
-
-
+        addToHead(node);
     }
-}*/
+}

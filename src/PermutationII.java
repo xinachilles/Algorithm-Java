@@ -1,5 +1,7 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -13,35 +15,44 @@ public class PermutationII {
         if (nums == null || nums.length == 0) {
             return result;
         }
-
-        Arrays.sort(nums);
-        List<Integer> solution = new ArrayList<>();
-        int[] visited = new int[nums.length];
-
-        permuteUniqueHelper(nums, result, solution, visited);
+        permuteUniqueHelper(nums, result,0);
         return result;
     }
 
-    private void permuteUniqueHelper(int[] nums, List<List<Integer>> result, List<Integer> solution, int[] visted) {
-        if (solution.size() == nums.length) {
-            result.add(new ArrayList<>(solution));
+    private void permuteUniqueHelper(int[] nums, List<List<Integer>> result,int level) {
+        if (level == nums.length) {
+            result.add(getList(nums));
             return;
         }
-        int lastValue = Integer.MAX_VALUE;
+
+        HashSet<Integer> visited = new HashSet<>();
+
+        for (int i = level ; i < nums.length; i++) {
+           if(!visited.contains(nums[i])){
+               Swap(nums,level, i);
+               visited.add(nums[i]);
+               permuteUniqueHelper(nums, result, level+1);
+               Swap(nums,i,level);
+
+           }
 
 
-        for (int i = 0; i < nums.length; i++) {
-            if (lastValue != nums[i] && visted[i] == 0) {
-                solution.add(nums[i]);
-                visted[i] = 1;
-                permuteUniqueHelper(nums, result, solution, visted);
-
-                solution.remove(solution.size() - 1);
-                lastValue = nums[i];
-                visted[i] = 0;
-
-            }
         }
+    }
+
+    private List<Integer> getList(int[] nums){
+        List<Integer> result = new ArrayList<>();
+        for(int i = 0; i<nums.length;i++){
+            result.add(nums[i]);
+        }
+
+        return result;
+    }
+
+    private void Swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 
 

@@ -6,107 +6,55 @@ import java.util.Set;
  */
 public class UniqueSubstringsWraparoundString {
 
-    // unique substring in wraparound string
-    // how to solve this problme by dp?
-    public int findSubstringInWraproundString(String p)
-    {
-        if( p == null || p.length() == 0){
+    public int findSubstringInWraproundString(String p) {
+        if (p == null || p.length() == 0) {
             return 0;
         }
-        int[] dp = new int[26];
-        //dp[i] means the number of substring present in s which edn with c
-        int count = 1;
-        dp[p.charAt(0)-'a'] = 1;
 
-        for(int i = 1;i<p.length();i++){
-            if(p.charAt(i-1) ==(char) p.charAt(i)-1 || (char)( p.charAt(i-1)-25) == p.charAt(i) ){
-                count++;
-            }else{
-                count = 1;
+        Set<String> sets = new HashSet<>();
+
+        for (int i = 0; i < p.length(); i++) {
+            for (int j = i; j < p.length(); j++) {
+                if (j == i) {
+                    if (!sets.contains(p.charAt(i))) {
+                        sets.add((String.valueOf(p.charAt(i))));
+                    }
+                } else {
+                    int current =  (p.charAt(j-1) + 1);
+
+
+                    if (current > 'z') {
+                        current = 'a';
+                    }
+
+                    if ((char) current != p.charAt(j)) {
+                        break;
+                    } else {
+                        if (!sets.contains(p.substring(i, j))) {
+                            sets.add(p.substring(i, j));
+                        }
+                    }
+
+
+                }
             }
 
-            dp[p.charAt(i)-'a'] = Math.max(dp[p.charAt(i)-'a'],count);
+
         }
 
-        int sum = 0;
 
-        for(int i = 0;i<dp.length;i++){
-            sum = sum+dp[i];
-        }
-
-        return sum;
+        return sets.size();
     }
 
 
-    // just need a for loop
-    //private void findSubstringInWraproundStringHelper(string p, int index, HashSet<String> sets)
-    //{
-
-    //    for(int i = index; i<=p.Length; i++){
-    //        string substring = p.Substring(index, i - index + 1);
-    //        if (!sets.Contains(substring) && isValidSubsets(substring))
-    //        {
-    //            sets.Add(substring);
-    //            findSubstringInWraproundStringHelper(p, i + 1, sets);
-    //        }
-
-
-    //    }
-    //}
-
-    //private bool isValidSubsets(String p)
-    //{
-    //    if (p == null || p.Length == 0)
-    //    {
-    //        return false;
-    //    }
-
-    //    int start = p[0] - 'a' + 1;
-
-    //    for (int i = 1; i < p.Length; i++)
-    //    {
-    //        if (start > 'z')
-    //        {
-    //            start = 'a';
-    //        }
-
-    //        if ((char)start != p[i])
-    //        {
-    //            return false;
-    //        }
-
-    //        start = start + 1;
-    //    }
-
-    //    return true;
-    //}
-
-
-    private boolean isValidSubsets(String p)
-    {
-        if (p == null || p.length() == 0)
-        {
+    private boolean isValidSubsets(String p) {
+        if (p == null || p.length() == 0) {
             return false;
         }
 
-        int start = p.charAt(0)  + 1;
-
-        for (int i = 1; i < p.length(); i++)
-        {
-            if (start > 'z')
-            {
-                start = 'a';
-            }
-
-            if ((char)start != p.charAt(i))
-            {
-                return false;
-            }
-
-            start = start + 1;
-        }
 
         return true;
     }
+
 
 }

@@ -13,7 +13,7 @@ public class WordLadderII {
             return reuslt;
         }
 
-        BFS(beginWord, endWord, wordMap, wordList);
+       // BFS(beginWord, endWord, wordMap, wordList);
 
 
         List<String> solution = new ArrayList<>();
@@ -22,15 +22,11 @@ public class WordLadderII {
         return reuslt;
     }
 
-    private void BFS(String beginWord, String endWord, Map<String, List<String>> wordMap, List<String> wordList) {
+    private void BFS(String beginWord, String endWord, Map<String, Set<String>> wordMap, List<String> wordList) {
         Queue<String> toVisit = new LinkedList<>();
         toVisit.offer(beginWord);
-
-
         Set<String> visted = new HashSet<>();
-
-
-        wordMap.put(endWord, new ArrayList<>());
+        wordMap.put(endWord, new HashSet<>());
 
 
         int step = 0;
@@ -55,17 +51,13 @@ public class WordLadderII {
 
                         if (newWord.equals(endWord)) {
                             find = true;
-                            if (!wordMap.get(endWord).contains(currentWord)) {
-                                wordMap.get(endWord).add(currentWord);
-                            }
 
-                            continue;
                         }
 
                         if (newWord.equals(endWord) || wordList.contains(newWord) && !visted.contains(newWord)) {
 
                             if (!wordMap.containsKey(newWord)) {
-                                wordMap.put(newWord, new ArrayList<>());
+                               // wordMap.put(newWord, new ArrayList<String>());
                             }
 
                             if (!wordMap.get(newWord).contains(currentWord)) {

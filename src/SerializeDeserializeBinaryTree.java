@@ -1,3 +1,7 @@
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Created by xhu on 1/10/17.
  */
@@ -24,31 +28,32 @@ public class SerializeDeserializeBinaryTree {
     }
 
     // Decodes your encoded data to tree.
-    int index = 0;
+
     public TreeNode deserialize(String data) {
         if(data == null|| data.length() ==0){
             return null;
         }
 
         String[] values = data.split(",");
-        return deserializeHelper(values);
+        Queue<String> q = new LinkedList<>(Arrays.asList(values));
+        return deserializeHelper(q);
     }
 
-    private TreeNode deserializeHelper(String[] values){
-        if(index>=values.length){
+    private TreeNode deserializeHelper(Queue<String> q){
+        if(q.isEmpty()){
             return null;
         }
 
-        String value = values[index];
+        String value = q.poll();
         if(value.equals("#")){
             return null;
         }
 
         TreeNode root = new TreeNode(Integer.valueOf(value));
-        index++;
-        root.left = deserializeHelper(values);
-        index++;
-        root.right = deserializeHelper(values);
+
+        root.left = deserializeHelper(q);
+
+        root.right = deserializeHelper(q);
 
         return root;
     }

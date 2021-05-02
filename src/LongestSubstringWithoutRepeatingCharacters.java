@@ -1,4 +1,6 @@
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Created by xhu on 1/16/17.
@@ -9,7 +11,7 @@ public class LongestSubstringWithoutRepeatingCharacters {
             return 0;
         }
 
-        HashSet<Character> maps = new HashSet<>();
+        Map<Character, Integer> maps = new HashMap<>();
         int max = 1;
 
         int left = 0;
@@ -17,14 +19,14 @@ public class LongestSubstringWithoutRepeatingCharacters {
 
         for (; right < s.length(); right++) {
             char current = s.charAt(right);
-            if (!maps.contains(current)) {
-                maps.add(current);
+            maps.put(current, maps.getOrDefault(current, 0) + 1);
+            if (maps.get(current) == 1) {
                 if (max < right - left + 1) {
                     max = right - left + 1;
                 }
             } else {
-                while (maps.contains(current)) {
-                    maps.remove(s.charAt(left));
+                while (maps.get(current) > 1) {
+                    maps.put(current, maps.get(current) - 1);
                     left++;
                 }
 

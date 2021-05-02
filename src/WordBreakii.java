@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Created by xhu on 11/5/16.
@@ -8,34 +7,32 @@ import java.util.Set;
 public class WordBreakii {
     // word break ii
     public List<String> wordBreak(String s, Set<String> wordDict) {
-        List<String> result = new ArrayList<>();
         if (s == null || s.length() == 0) {
+            return null;
+        }
+        Map<String, List<String>> maps = new HashMap<>();
+        return helper(s,wordDict,maps);
+    }
+
+    public List<String> helper(String s, Set<String> wordDict, Map<String,List<String>> memo){
+        List<String> result = new ArrayList<>();
+        if(s == null || s.length() == 0){
+            result.add("");
             return result;
         }
-
-        wordBreakHelper(s, wordDict, 0, "", result);
+        if(memo.containsKey(s)) return memo.get(s);
+        for(String word: wordDict){
+           if(s.startsWith(word)){
+               List<String> sub = helper(s.substring(word.length()), wordDict,memo);
+               for(String substring : sub){
+                   String optionalSpace = substring.length() ==0? "": " ";
+                   result.add(word+ optionalSpace+substring);
+               }
+           }
+        }
+        memo.put(s,result);
         return result;
     }
 
-    private void wordBreakHelper(String s, Set<String> wordDict, int index, String solution, List<String> result) {
-        if (index > s.length()) {
-            return;
-        }
 
-        if (index == s.length()) {
-            result.add(solution);
-            return;
-        }
-
-        for (int i = index; i < s.length(); i++) {
-            // java version
-            String substring = s.substring(index, i + 1);
-            if (wordDict.contains(substring)) {
-                wordDict.remove(substring);
-                wordBreakHelper(s, wordDict, i + 1, solution.length() == 0 ? substring : solution + " " + substring, result);
-                wordDict.add(substring);
-            }
-
-        }
-    }
 }

@@ -39,7 +39,6 @@ public class SubStringKDist {
 
 
     public List<String> subStringK1Dist(String inputStr, int num)
-
     {
 
         List<String> result = new ArrayList<>();

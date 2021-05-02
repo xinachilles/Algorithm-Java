@@ -17,19 +17,20 @@ public class EvaluateDivision {
         }
     }
 
-    public double[] calcEquation(String[][] equations, double[] values, String[][] queries) {
-        double[] result = new double[queries.length];
+    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        double[] result = new double[queries.size()];
         if (equations == null || values == null || queries == null) {
             return null;
         }
 
         Map<String, List<Node>> graph = new HashMap<>();
-        for (int i = 0; i < equations.length; i++) {
-            String node = equations[i][0];
+        int index = 0;
+        for (List<String> equation : equations) {
+            String node = equation.get(0);
 
-            String neighbor = equations[i][1];
+            String neighbor = equation.get(1);
 
-            double value = values[i];
+            double value = values[index++];
 
             if (graph.get(node) == null) {
                 graph.put(node, new ArrayList<>());
@@ -44,52 +45,49 @@ public class EvaluateDivision {
 
             graph.get(neighbor).add(new Node(node, 1 / value));
         }
-
-        for (int i = 0; i < queries.length; i++) {
-            String from = queries[i][0];
-            String to = queries[i][1];
-            HashSet<String> visited = new HashSet<String>();
+        index = 0;
+        for (List<String> query : queries) {
+            String from = query.get(0);
+            String to = query.get(1);
+            HashSet<String> visited = new HashSet<>();
             if (graph.containsKey(from) && graph.containsKey(to)) {
                 if (from.equals(to)) {
-                    result[i] = 1.0;
+                    result[index] = 1.0;
                 } else {
-                    result[i] = DFSEquation(from, to, graph, visited, new ArrayList<>());
+                    result[index] = DFSEquation(from, to, graph, visited, 1);
                 }
 
             } else {
-                result[i] = -1.0;
+                result[index] = -1.0;
             }
-
+            index++;
         }
         return result;
 
     }
 
-    private double DFSEquation(String from, String dest, Map<String, List<Node>> graph, HashSet<String> visited, List<Double> path) {
+    private double DFSEquation(String from, String dest, Map<String, List<Node>> graph, HashSet<String> visited, double result) {
         if (from.equals(dest)) {
-            Double result = 1.0;
-            for (Double n : path) {
-                result *= n;
-            }
-
             return result;
-        }
-
-        if (graph.get(from) == null || visited.contains(from)) {
-            return -1.0;
         }
 
         visited.add(from);
         for (Node n : graph.get(from)) {
-            path.add(n.weight);
-            Double value = DFSEquation(n.value, dest, graph, visited, path);
-            path.remove(path.size() - 1);
+            if (n.value.equals(from)) {
+                continue;
+            }
+
+            if (visited.contains(n.value)) {
+                return -1.0;
+            }
+            Double value = DFSEquation(n.value, dest, graph, visited, result * n.weight);
+
             if (value > 0) {
                 return value;
             }
         }
 
-        return -1.0;
+        return 0.0;
     }
 
 

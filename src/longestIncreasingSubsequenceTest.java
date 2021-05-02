@@ -9,7 +9,7 @@ public class longestIncreasingSubsequenceTest {
     @Test
     public void lengthOFLIS() throws Exception {
          longestIncreasingSubsequence target = new longestIncreasingSubsequence();
-         target.lengthOFLIS(new int[]{10, 9, 2, 5, 3, 7, 101, 18 });
+      //   target.lengthOFLIS(new int[]{10, 9, 2, 5, 3, 7, 101, 18 });
     }
 
 }

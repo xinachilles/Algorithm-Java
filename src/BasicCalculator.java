@@ -1,141 +1,112 @@
-import java.util.Stack;
+import java.util.*;
 
-
-/**
- * Created by xhu on 10/15/16.
- */
 public class BasicCalculator {
-   /* public int calcuatio(String s){
-        if(s == null || s.length() == 0){
+    public int calculate(String s) {
+        if (s == null || s.length() == 0) {
             return 0;
         }
 
-        Stack<Character> operations = new Stack<Character>();
-        // store the index of operations included: plus, minus, parentheses
-        Stack<Integer> number = new Stack<Integer>();
-        // store the index of each number character in S
+        return solveRPN(getRPN(s));
+    }
 
-        for(int i = 0; i<s.length(); i++){
-            if(s.charAt(i) == ')'){
-                int result = 0;
-                while(!operations.isEmpty() && !number.isEmpty()){
-                    Character current = operations.pop();
-                    if(current == '(' ){
-                        break;
+    private List<String> getRPN(String s) {
+        if (s == null) {
+            return null;
+        }
+
+        List<String> result = new ArrayList<>();
+        Stack<Character> op = new Stack<>();
+        int i = 0;
+        while (i < s.length()) {
+
+            if (s.charAt(i) == ' ') {
+                continue;
+            }
+            String number = "";
+            if(Character.isDigit(s.charAt(i))) {
+                while (i < s.length() && Character.isDigit(s.charAt(i))) {
+                    number += s.charAt(i);
+                    i++;
+                }
+                result.add(number);
+            }else {
+
+                if (s.charAt(i) == ')') {
+                    while (!op.isEmpty() && op.peek() != '(') {
+                        result.add(op.pop().toString());
                     }
 
-                    if(current ==')'){
-                        return 0;
+                    if (!op.isEmpty() && op.peek() == '(') {
+                        op.pop();
+
                     }
 
-                    int a = number.pop();
-                    int b = number.pop();
 
-                    if(current == '+'){
-                        result = a+b+result;
-                    }else if(current == '-'){
-                        result = a-b+result;
+                } else if ("+-*/".indexOf(s.charAt(i)) >= 0) {
+                    while (!op.isEmpty() && getWeight(op.peek()) >= getWeight(s.charAt(i))) {
+                        result.add(op.pop().toString());
+
                     }
                 }
-                number.push(result);
-            }else if(s.charAt(i) == '(' || s.charAt(i) == '+' || s.charAt(i) == '-'){
-                operations.push(s.charAt(i));
-            }else{
-                number.push(Character.getNumericValue(s.charAt(i)));
+                op.push(s.charAt(i));
+                i++;
             }
         }
 
+        while (!op.isEmpty()) {
 
-        int ans = 0;
+            result.add(op.pop().toString());
 
-        while(!operations.isEmpty() && !number.isEmpty()){
-            Character current = operations.pop();
-            if(current == '(' || current ==')' ){
-                break;
+        }
+
+        return result;
+    }
+
+    private int solveRPN(List<String> s) {
+        if (s == null) {
+            return 0;
+        }
+
+
+        Stack<Integer> stack = new Stack<>();
+
+        for (String s1 : s) {
+            if (s1.trim().length() == 0) {
+                continue;
             }
-            if(number.size()<2){
-                return -1;
-            }
+            if ("+-*/".indexOf(s1) != -1) {
+                int number1 = stack.pop();
+                int number2 = stack.pop();
+                int result = 0;
 
+                if (s1.equals("+")) {
+                    result = number1 + number2;
+                } else if (s1.equals("-")) {
+                    result = number2 - number1;
+                } else if (s1.equals("*")) {
+                    result = number1 * number2;
+                } else if (s1.equals("/")) {
+                    result = number2 / number1;
+                }
 
-            int a = number.pop();
-            int b = number.pop();
-
-            if(current == '+'){
-                ans = a+b+ans;
-            }else if(current == '-'){
-                ans = a-b+ans;
+                stack.push(result);
+            } else {
+                stack.push(Integer.valueOf(s1));
             }
         }
-        return ans;
-    }*/
-   private  int getWeight(String expression,int base){
-       if(expression == "+" || expression == "-"){
-           base+=1;
-           return base;
-       }
 
-       if(expression == "/" || expression == "*"){
-           base+=2;
-           return base;
-       }
+        return stack.pop();
+    }
 
-       return  Integer.MAX_VALUE;
+    private int getWeight(Character c) {
+        if ("+-".indexOf(c) >= 0) {
+            return 1;
+        }
 
-   }
-   public TreeNode2 getRPN(String s) {
+        if ("*/".indexOf(c) >= 0) {
+            return 2;
+        }
 
-
-       int number = 0;
-
-       int base =0;
-       Stack<TreeNode2> tree = new Stack<>();
-       for(int i = 0; i < s.length(); i++){
-           char c = s.charAt(i);
-           if(Character.isDigit(c)){
-               number = 10 * number + (int)(c - '0');
-           }else {
-                TreeNode2 node = new TreeNode2(new ExpressionTreeNode(String.valueOf(number)),getWeight(String.valueOf(number),base));
-
-                AddToTree(tree,node);
-                TreeNode2 op = new TreeNode2(new ExpressionTreeNode(String.valueOf(c)),getWeight(String.valueOf(c),base));
-                AddToTree(tree,op);
-
-
-
-           }
-       }
-
-       return tree.peek();
-
-   }
-
-   private int EvalRPN(TreeNode2 root){
         return 0;
-   }
-
-
-   private void AddToTree(Stack<TreeNode2> tree,TreeNode2 node){
-
-      while(!tree.isEmpty() && node.weight<tree.peek().weight){
-          TreeNode2 current = tree.pop();
-
-          if(tree.isEmpty())
-          {
-              node.node.left  = current.node;
-          }else{
-
-              TreeNode2 left = tree.peek();
-              if(left.weight>node.weight){
-                  left.node.right = current.node;
-              }else{
-                  node.node.left = current.node;
-              }
-          }
-
-      }
-
-      tree.push(node);
-
-}
+    }
 }

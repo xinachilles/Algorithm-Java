@@ -11,21 +11,22 @@ public class SnakeGame {
 
     int width;
     int height;
-    Deque<int[]> snake = new LinkedList<>();
+    int indexOfFood;
+    int[][] food;
+    int score;
+    Deque<Integer> snake = new LinkedList<>();
+    Set<Integer> set = new HashSet<>();
 
-
-    Queue<int[]> food = new LinkedList<>();
-    int current;
 
     public SnakeGame(int width, int height, int[][] food) {
         this.width = width;
         this.height = height;
-        snake.offer(new int[]{0, 0});
-        current = 0;
+        this.food = food;
+        snake.offer(0);
+        set.add(0);
+        indexOfFood = 0;
+        score = 0;
 
-        for (int[] f : food) {
-            this.food.offer(f);
-        }
     }
 
 
@@ -37,51 +38,47 @@ public class SnakeGame {
      * Game over when snake crosses the screen boundary or bites its body.
      */
     public int move(String direction) {
-        int[] current = snake.getLast();
-        int[] newHead = new int[2];
+        if (score < 0) {
+            return score;
+        }
+        //
+        int row = snake.getFirst() / width;
+        int col = snake.getFirst() % width;
 
         switch (direction) {
             case "U":
-                if (current[0] - 1 < 0) {
-                    return -1;
-                }
-                newHead = new int[]{current[0] - 1, current[1]};
+                row--;
                 break;
             case "L":
-                if (current[1] - 1 < 0) {
-                    return -1;
-                }
-                newHead = new int[]{current[0], current[1] - 1};
+                col--;
                 break;
             case "R":
-                if (current[1] + 1 >= width) {
-                    return -1;
-                }
-                newHead = new int[]{current[0], current[1] + 1};
+                col++;
                 break;
             case "D":
-                if (current[0] + 1 >= height) {
-                    return -1;
-                }
-                newHead = new int[]{current[0] + 1, current[1]};
+                row++;
                 break;
         }
+        // remove the tail from set
+        set.remove(snake.getLast());
 
-
-
-
-        if (food.isEmpty()||(newHead[0] != food.peek()[0] || newHead[1] != food.peek()[1])) {
-            snake.removeFirst();
-        }
-
-        if (snake.contains(newHead)) {
+        if (row < 0 || row > height || col < 0 || col > width || set.contains(snake.getFirst())) {
             return -1;
-        } else {
-            food.poll();
-            snake.offer(newHead);
-            return snake.size();
+        }
+        int head = row * width + col;
+        snake.addFirst(head);
+        set.add(head);
+
+        // eat the food
+        if (indexOfFood < food.length && row == food[indexOfFood][0] && col == food[indexOfFood][1]) {
+            score++;
+            set.add(snake.getLast());// add the tail back
+            return score;
         }
 
+        // remove the tail
+        snake.removeLast();
+        return score;
 
     }
 

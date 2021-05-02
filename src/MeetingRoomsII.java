@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -6,7 +7,7 @@ import java.util.*;
 
 
 public class MeetingRoomsII {
-    class Time implements  Comparable<Time>{
+    class Time {
         int time;
         boolean isStart;
 
@@ -16,46 +17,25 @@ public class MeetingRoomsII {
 
         }
 
-        @Override
-        public  int compareTo(Time a){
-            if(this.time == a.time){
-                if(a.isStart){
-                    return -1;
-                }else{
-                    return  1;
-                }
-            }else{
-                return this.time - a.time;
-            }
 
-        }
 
     }
-    public int minMeetingRooms(Interval[] intervals) {
+    public int minMeetingRooms(int[][] intervals) {
         if(intervals == null || intervals.length == 0){
             return 0;
         }
-        List<Time> times = new ArrayList<>();
-        for(Interval i : intervals){
-            times.add(new Time(i.start,true));
-            times.add(new Time(i.end,false));
-        }
+        Arrays.sort(intervals,(a, b)->{return a[0]-b[0];});
+        Queue<Integer> queue = new PriorityQueue<>();
+        queue.offer(intervals[1][1]);
 
-        Collections.sort(times);
-        int count = 0;
-        int max = 0;
-
-        for(Time t:times){
-            if(t.isStart){
-                count ++;
-            }else{
-                count --;
+        for(int i = 1; i<intervals.length;i++){
+            while(!queue.isEmpty() && intervals[i][0] >=queue.peek()){
+                queue.poll();
             }
-
-            max = Math.max(max,count);
+            queue.offer(intervals[1][1]);
         }
 
-        return max;
+        return queue.size();
     }
 }
 

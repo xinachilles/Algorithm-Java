@@ -5,6 +5,7 @@ import java.util.List;
  * Created by xhu on 7/4/17.
  */
 public class Permutations {
+
     public List<List<Integer>> permute(int[] nums) {
         List<List<Integer>> result  = new ArrayList<>();
 
@@ -19,7 +20,7 @@ public class Permutations {
             int size = result.size();
             List<List<Integer>> nextLevel  = new ArrayList<>();
             for(int k = 0;k<size;k++){
-                List<Integer> pre = result.get(k);
+                    List<Integer> pre = result.get(k);
                 for(int j=0;j<=pre.size();j++){
                     List<Integer> current = new ArrayList<Integer>(pre);
                     current.add(j,number);

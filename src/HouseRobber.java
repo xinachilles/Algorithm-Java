@@ -7,18 +7,15 @@ public class HouseRobber {
             return 0;
         }
 
-        int[] max = new int[nums.length];
-        // max[i] is the max value the robber can rob from 0 to i house
-
-        max[0] = nums[0];
-
-        if(nums.length >1) {
-            max[1] = Math.max(nums[0], nums[1]);
-        }
-        for(int i =2; i<nums.length;i++){
-            max[i] = Math.max(max[i-1], max[i-2]+nums[i]);
+        int first= nums[0];
+        int second = Math.max(nums[0],nums[1]);
+        int temp = 0;
+        for(int i = 2; i<nums.length;i++){
+            temp = Math.max(first+nums[i],second);
+            first = second;
+            second =  temp;
         }
 
-        return max[nums.length-1];
+        return Math.max(first,second);
     }
 }

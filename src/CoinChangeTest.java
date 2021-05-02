@@ -12,4 +12,9 @@ public class CoinChangeTest {
             target.coinChange(new int[]{2},3);
     }
 
+    @Test
+    public void coinChange2() {
+        CoinChange test = new CoinChange();
+        test.coinChange2(new int[]{1,2,5},11);
+    }
 }

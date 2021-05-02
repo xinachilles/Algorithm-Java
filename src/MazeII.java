@@ -1,105 +1,64 @@
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Created by xhu on 5/29/17.
  */
 public class MazeII {
-
     public int shortestDistance(int[][] maze, int[] start, int[] destination) {
         if (maze == null || start == null || destination == null) {
-            return -1;
+            return 0;
+        }
+        int rows = maze.length;
+        int cols = maze[0].length;
+
+        PriorityQueue<int[]> visiting = new PriorityQueue<int[]>((a, b) -> {
+            return a[2] - b[2];
+        });
+        // if the element first time pop from the queue
+        boolean[][] resoved = new boolean[rows][cols];
+        visiting.offer(new int[]{start[0], start[1], 0});
+        int[][] moves = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+        while (!visiting.isEmpty()) {
+            int[] current = visiting.poll();
+            int row = current[0];
+            int col = current[1];
+            int distance = current[2];
+
+
+            if (row == destination[0] && col == destination[1]) {
+                return distance;
+            }
+
+            if (resoved[row][col]) {
+                continue;
+            }
+
+            resoved[row][col] = true;
+
+            for (int i = 0; i < 4; i++) {
+                int r = row;
+                int c = col;
+                int d = distance;
+                // down
+                while (!outofBoundary(r + moves[i][0], c + moves[i][1], rows, cols) && maze[r + moves[i][0]][col + moves[i][1]] != 1) {
+                    r = r + moves[i][0];
+                    c = c + moves[i][1];
+                    d++;
+                }
+                if (resoved[r][c] == false) {
+                    visiting.offer(new int[]{r, col, d});
+                }
+
+
+            }
         }
 
-        int row = maze.length;
-        int col = maze[0].length;
-
-        int[][] distance = new int[row][col];
-
-
-
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                distance[i][j] = Integer.MAX_VALUE;
-
-
-            }
-        }
-
-        Queue<int[]> toVisited = new LinkedList<>();
-        toVisited.offer(new int[]{start[0],start[1],0});
-        distance[start[0]][start[1]]  = 0;
-
-
-        while (!toVisited.isEmpty()) {
-
-            int[] current = toVisited.poll();
-            int r = current[0];
-            int c = current[1];
-            int d = current[2];
-
-
-
-
-            //up
-            int i = r;
-            int tempDistance = d;
-            while (i - 1 >= 0 && maze[i - 1][c] != 1) {
-                i--;
-                tempDistance++;
-            }
-
-            if (distance[i][c] > tempDistance && tempDistance<distance[destination[0]][destination[1]]) {
-                distance[i][c] = tempDistance;
-                toVisited.offer(new int[]{i, c, tempDistance});
-
-            }
-
-            //down
-            i = r;
-            tempDistance = d;
-            while (i + 1 < row && maze[i + 1][c] != 1) {
-                i++;
-                tempDistance++;
-            }
-
-            if (distance[i][c] > tempDistance && tempDistance<distance[destination[0]][destination[1]]) {
-                distance[i][c] = tempDistance;
-                toVisited.offer(new int[]{i, c, tempDistance});
-            }
-
-            //left
-            i = c;
-            tempDistance = d;
-            while (i - 1 >= 0 && maze[r][i-1] != 1) {
-                i--;
-                tempDistance++;
-            }
-
-            if (distance[r][i] > tempDistance && tempDistance<distance[destination[0]][destination[1]]) {
-                distance[r][i] = tempDistance;
-                toVisited.offer(new int[]{r, i, tempDistance});
-            }
-
-            //right
-            i = c;
-            tempDistance = d;
-            while (i + 1 < col && maze[r][i+1] != 1) {
-                i++;
-                tempDistance++;
-            }
-
-            if (distance[r][i] > tempDistance && tempDistance<distance[destination[0]][destination[1]]) {
-                distance[r][i] = tempDistance;
-                toVisited.offer(new int[]{r, i, tempDistance});
-            }
-
-
-        }
-
-
-        return distance[destination[0]][destination[1]];
+        return -1;
     }
+
+    private boolean outofBoundary(int r, int c, int rows, int cols) {
+        return (r < 0 || r >= rows || c < 0 || c >= cols);
+    }
+
 }

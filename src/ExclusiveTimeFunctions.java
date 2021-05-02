@@ -8,32 +8,34 @@ public class ExclusiveTimeFunctions {
             return new int[]{};
         }
 
-        String[] task = logs.get(0).split(":");
+        String[] task = new String[3];
         int[] result = new int[n]; // for the excution time
-        Stack<Integer> stack  = new Stack<Integer>();
+        //Stack<Integer> stack  = new Stack<Integer>();
 
-        stack.push(Integer.parseInt(task[0])); // push the task index to
-        int i = 1, time = Integer.parseInt(task[2]);
+        // stack.push(Integer.parseInt(task[0])); // push the task index to
+        int i = 0, pre = 0;
 
         while(i<logs.size()){
             task = logs.get(i).split(":");
 
-            while(time<Integer.parseInt(task[2])){
-                time++;
-                result[stack.peek()]++;
-            }
 
             if(task[1].equals( "start")){
-                stack.push(Integer.parseInt(task[0]));
+
+                result[ Integer.parseInt(task[0])] += Integer.parseInt(task[2]) - pre;
+                pre = Integer.parseInt(task[2]);
+               // stack.push(Integer.parseInt(task[0]));
             }else{
-                time++;
-                result[stack.peek()]++;
-                stack.pop();
+
+                result[Integer.parseInt(task[0])] += Integer.parseInt(task[2]) - pre+1;
+                pre = Integer.parseInt(task[2])+1;
+              //  stack.pop();
             }
-                i++;
+            i++;
         }
 
         return result;
+
+
 
 
 

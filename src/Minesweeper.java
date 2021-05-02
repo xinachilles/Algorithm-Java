@@ -30,8 +30,6 @@ public class Minesweeper {
                 board[row][col] ='X';
                 return board;
             }
-
-
             int numberOfMine = getNumberOfMine(board,row, col);
             if(numberOfMine == 0){
                 board[row][col] = 'B';

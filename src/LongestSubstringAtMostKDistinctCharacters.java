@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -13,16 +14,14 @@ public class LongestSubstringAtMostKDistinctCharacters {
 
         int left = 0;
         int right = 0;
-        Map<Character, Integer> mapping = new HashMap<Character, Integer>();
+        HashSet<Character> mapping = new HashSet<Character>();
         int longest = Integer.MIN_VALUE;
 
         for (; right < s.length(); right++) {
             char current = s.charAt(right);
-            if (!mapping.containsKey(current)) {
+            if (!mapping.contains(current)) {
 
-                mapping.put(current, 1);
-            } else {
-                mapping.put(current, mapping.get(current) + 1);
+                mapping.add(current);
             }
 
 
@@ -31,10 +30,10 @@ public class LongestSubstringAtMostKDistinctCharacters {
             } else {
                 while (mapping.size() > k) {
                     char l = s.charAt(left);
-                    mapping.put(l, mapping.get(l) - 1);
-                    if (mapping.get(l) == 0) {
+                    if(mapping.contains(l)){
                         mapping.remove(l);
                     }
+
 
                     left++;
                 }

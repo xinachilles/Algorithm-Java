@@ -4,24 +4,31 @@
 public class CountandSay {
     // count and say
     public String countAndSay(int n) {
+        if(n<=0) return "";
 
-        StringBuilder s = new StringBuilder("1");
-        for (int i = 1; i <= n; i++) {
+        String result = "1";
+
+        for(int i = 2;i<=n;i++){
+            String temp = "";
+            char current = result.charAt(0);
             int count = 1;
-            StringBuilder ans = new StringBuilder();
-            for (int j = 1; j < s.length(); j++) {
-                if (s.charAt(j) == s.charAt(j - 1)) {
-                    count++;
-                } else {
-                    ans.append(String.valueOf(count)).append(s.charAt(j - 1));
+            for(int j = 1; j<result.length(); j++){
+                if(result.charAt(i) != current){
+                    temp= temp+ String.valueOf(count)+current;
+                    current = result.charAt(i);
                     count = 1;
+
+                }else{
+                    count ++;
                 }
             }
-            ans.append(String.valueOf(count)).append(s.charAt(s.length() - 1));
-            s = ans;
+
+            temp= temp+String.valueOf(count)+current;
+            result = temp;
         }
 
-        return s.toString();
+        return result;
+
 
     }
 }

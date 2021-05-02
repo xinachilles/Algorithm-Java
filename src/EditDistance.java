@@ -3,36 +3,36 @@
  */
 public class EditDistance {
     public int minDistiance(String word1, String word2) {
-        if (word1 == null || word2 == null) {
+        if(word1 == null && word2 == null){
             return 0;
         }
+        if(word1 == null) return word2.length();
+        if(word2 == null) return word1.length();
 
-        int[][] dy = new int[word1.length() + 1][word2.length() + 1];
-        // dy[i][j] means the min distance change from word1(0..i) to word2(0..j)
+        int[][] dp = new int[word1.length()+1][word2.length()+1]; //dp[i][j] is true or fasle means if the string s with lenght i and the string j with lenght j are both one edit distance part.
 
-        for (int i = 0; i < word1.length(); i++) {
-            dy[i + 1][0] = dy[i][0] + 1;
+        for(int i = 0; i<word1.length(); i++){
+            dp[i+1][0] = i+1;
+        }
+        for(int i = 0; i<word2.length(); i++){
+            dp[0][i+1] = i+1;
         }
 
-        for (int j = 0; j < word2.length(); j++) {
-            dy[0][j + 1] = dy[0][j] + 1;
-        }
+        for(int i = 0; i<word1.length(); i++){
+            for(int j = 0; j<word2.length(); j++){
+               if(word1.charAt(i) == word1.charAt(j)){
+                   dp[i+1][j+1] = dp[i][j];
+               }else{
+                   dp[i+1][j+1] = Math.min(Math.min( dp[i][j+1], dp[i+1][j]), dp[i][j]);
+               }
 
-        for (int i = 0; i < word1.length(); i++) {
-            for (int j = 0; j < word2.length(); j++) {
-                if (word1.charAt(i) == word2.charAt(j)) {
-                    dy[i + 1][j + 1] = dy[i][j];
-                } else {
-                    int insert = dy[i][j - 1] + 1;
-                    int delete = dy[i - 1][j] + 1;
-                    int replace = dy[i - 1][j - 1] + 1;
 
-                    dy[i + 1][j + 1] = Math.min(Math.min(insert, delete), replace);
-                }
             }
         }
 
-        return dy[word1.length()][word2.length()];
+        return dp[word1.length()][word2.length()];
+
+
     }
 
 }
