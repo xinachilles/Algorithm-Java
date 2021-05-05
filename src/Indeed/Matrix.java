@@ -100,23 +100,98 @@ validateNonogram(matrix1, rows1_2, columns1_2) => False
 
 The second and third rows and the first column do not match their respective instructions.
 
-Example instructions #3
 
-matrix2 = [
-[ 1, 1 ],
-[ 0, 0 ],
-[ 0, 0 ],
-[ 1, 0 ]
-]
-rows2_1    = [], [2], [2], [1]
-columns2_1 = [1, 1], [3]
-validateNonogram(matrix2, rows2_1, columns2_1) => False
-
-The black cells in the first column are not separated by white cells.
-
-n: number of rows in the matrix
-m: number of columns in the matrix
 """
 
     * */
+/*
+    matrix1 = [[1,1,1,1],
+            [0,1,1,1],
+            [0,1,0,0],
+            [1,1,0,1],
+            [0,0,1,1]]
+    rows1_1    =  [], [1], [1,2], [1], [2]
+    columns1_1 =  [2,1], [1], [2], [1]
+*/
+    public static boolean visValidNonogram(int[][]matrix, int[][] rows, int[][] cols) {
+        if (matrix == null || rows == null || cols == null) {
+            return false;
+        }
+  int  n = matrix.length;
+  int  m = matrix[0].length;
+        if (n == 0 || n != rows.length || m != cols.length) {
+            return false;
+        }
+        return isNonogramRowsValid(matrix, rows, n, m) && isNonogramColsValid(matrix, cols, n, m);
+
+    }
+
+    private static boolean isNonogramRowsValid(int[][] matrix, int[][] rowInstructions, int rows, int cols) {
+        for (int  i = 0; i < rows; i++) {
+            int  rowIndex = 0;
+            for (int  j = 0; j < cols; j++) {
+                if (matrix[i][j] == 0) {
+                    if (rowInstructions[i] == null || rowInstructions[i].length == 0) {
+                        return false;
+                    }
+                    // rows[1,2], first find a single run of 1 back cell
+                    for (int k = 0; k < rowInstructions[i][rowIndex]; k++) {
+                        if (j + k >= cols || matrix[i][j + k] != 0) {
+                            return false;
+                        }
+                    }
+                    // move col to find another black (0) cell
+                    if(rowIndex == rowInstructions[i].length-1){
+                        break;
+                    }
+                    j += rowInstructions[i][rowIndex++];
+                }
+            }
+           // if (rowIndex != rows[i].length) {
+             //   return false;
+           // }
+        }
+        return true;
+    }
+
+    private static boolean isNonogramColsValid(int[][]matrix, int[][]colInstructions, int rows, int cols) {
+        for (int j = 0; j < cols; j++) {
+            int colIndex = 0;
+            for (int i = 0; i < rows; i++) {
+                if (matrix[i][j] == 0) {
+                    if (colInstructions[j].length == 0) {
+                        return false;
+                    }
+                    for (int k = 0; k < colInstructions[j][colIndex]; k++) {
+                        if (i + k >= rows || matrix[i + k][j] != 0) {
+                            return false;
+                        }
+                    }
+                    if(colIndex == colInstructions[j].length-1){
+                        break;
+                    }
+                    i += colInstructions[j][colIndex++];
+                }
+            }
+            /*
+            if (colIndex != colInstructions[j].length) {
+                return false;
+            }
+            */
+        }
+        return true;
+    }
+
+    public static void main(String[] args){
+        /*
+        Example instructions #1
+        */
+        int[][] matrix1 = new int[][]{ {1,1,1,1}, {0,1,1,1}, {0,1,0,0}, {1,1,0,1}, {0,0,1,1}};
+        int[][] rowInstruction = new int[][]{{}, {1}, {1,2}, {1}, {2}};
+        int[][] colInstruction = new int[][]{ {2,1}, {1}, {2}, {1}};
+        boolean result = visValidNonogram (matrix1, rowInstruction, colInstruction);
+        System.out.println(result);
+
+
+    }
 }
