@@ -1,5 +1,8 @@
 package Indeed;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Vector {
     class Node {
         int val;
@@ -82,6 +85,38 @@ public class Vector {
         }
        result.append("]");
         return result.toString();
+    }
+    public Vector add(Vector v2){
+        if (this.size != v2.size) {
+        //    throw new Error('length mismatch');
+        }
+       Vector result = new Vector(this.size);
+        for (int i = 0; i < this.size; i++) {
+            result.set(i, this.get(i) + v2.get(i));
+        }
+
+        return result;
+    }
+    public int dot(Vector v2) {
+        if (this.size != v2.size) {
+           // throw new Error('length mismatch');
+        }
+        int result = 0;
+        for (int i = 0; i < this.size; i++) {
+            result += this.get(i) * v2.get(i);
+        }
+        return result;
+    };
+    public double  norm() {
+        int sum = 0;
+        for (int i = 0; i < this.size; i++) {
+            int val = this.get(i);
+            sum += val * val;
+        }
+        return Math.sqrt(sum);
+    }
+    public double SparseVectorCos(Vector v2) {
+        return this.dot(v2) / (this.norm() * v2.norm());
     }
 
 
