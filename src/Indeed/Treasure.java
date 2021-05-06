@@ -74,62 +74,51 @@ public class Treasure {
                 }
             }
         }
-
-        Queue<int[]> visiting = new LinkedList<>();
-        // current {r, c, current treasure}
-        Map<int[],List<int[]>> track = new HashMap<>();
-        int[][]moves = new int[][]{{0,1},{0,-1},{1,0},{-1,0}};
-
-        visiting.offer(new int[]{ start[0],start[1], board[start[0]][start[1]]});
-        while (!visiting.isEmpty()){
-            int size=  visiting.size();
-            for(int i = 0; i<size;i++){
-                int[] current = visiting.poll();
-                if(current[0] == end[0] && current[1] == end[1]){
-                    if(current[2] == numberofTreasure){
-                        continue;
-                    }
-                }else{
-                    for(int j = 0;j<moves.length;j++){
-                        int r1 = moves[j][0]+current[0];
-                        int c1 = moves[j][1]+current[1];
-                        if(r1>=0 && r1<board.length && c1>=0 && c1<board[0].length && board[r1][c1]!=-1){
-                            int number = board[r1][c1]==1?current[2]+1:current[2];
-                            board[r1][c1] = -1;
-                            int[] next = new int[]{r1,c1,number};
-                            if(r1 ==end[0] && c1 == end[1]){
-                                if(number == numberofTreasure ){
-                                    track.computeIfAbsent(next,a->new ArrayList<>()).add(current);
-                                }
-                            }else{
-                                track.computeIfAbsent(next,a->new ArrayList<>()).add(current);
-                                visiting.offer(next);
-                            }
-
-
-                        }
-                    }
-                }
-            }
-        }
         List<List<int[]>> result = new ArrayList<>();
-        DFS(track,start,end,new ArrayList<int[]>(),result);
+        DFS(board,end,start,numberofTreasure,new ArrayList<>(),result);
+
         return result;
 
 
     }
-    private static void DFS( Map<int[],List<int[]>> track, int[] destination, int []current,List<int[]>path, List<List<int[]>> solution){
-        if(current[0] == destination[0] && current[1] == destination[1]){
-            solution.add(new ArrayList<>(path));
+    private static void DFS( int[][]board, int[] destination,int []current,int totalTreasure,List<int[]>path, List<List<int[]>> solution
+    ) {
+        int r = current[0];
+        int c = current[1];
+
+        if (r < 0 || r >= board.length || c < 0 || c >= board[0].length) {
             return;
         }
-        if(!track.containsKey(current)) return;
-        for(int[]c : track.get(current)){
-            path.add(c);
-            DFS(track,destination,c,path,solution);
-            path.remove(path.size()-1);
+        if (board[r][c] == -1 || board[r][c] == 2) {
+            return;
+        }
+        int temp = board[r][c];
+        board[r][c] = 2;
+        path.add(current);
+        if (r == destination[0] && c == destination[1]) {
+            // if destination has treasure
+            if (totalTreasure-temp == 0) {
+                if (solution.size() > 0 && solution.get(0).size() > path.size()) {
+                    solution.clear();
+                }
+
+                if(solution.size()==0 || solution.get(0).size()== path.size()) {
+                    solution.add(new ArrayList<>(path));
+                }
+            }
+
+            board[r][c] = temp;
+            path.remove(path.size() - 1);
+            return;
+
         }
 
+        DFS(board, destination, new int[]{r+1,c},temp==1?totalTreasure-1:totalTreasure, path,solution);
+        DFS(board, destination, new int[]{r-1,c},temp==1?totalTreasure-1:totalTreasure, path,solution);
+        DFS(board, destination,new int[]{r,c-1}, temp==1?totalTreasure-1:totalTreasure, path,solution);
+        DFS(board, destination, new int[]{r,c+1},temp==1?totalTreasure-1:totalTreasure, path,solution);
+        board[r][c] = temp;
+        path.remove(path.size()-1);
     }
     public static void main(String[] args){
         int[][]board = new int[][]{ {1,  0,  0, 0, 0},
@@ -138,14 +127,15 @@ public class Treasure {
                 {-1,  0,  0, 0, 0},
                 {0,  1, -1, 0, 0},
                 {0,  0,  0, 0, 0 },};
-        int[] start = new int[]{5,2};
-        int[] end = new int[]{2,0};
+        int[] start = new int[]{0,0};
+        int[] end = new int[]{4,1};
         List<List<int[]>> result = findAllTreasures(board,start, end);
         for(List<int[]> path: result){
             for(int[] p : path){
                 System.out.printf("%d,%d",p[0],p[1]);
-                System.out.print(",");
+                System.out.print("|");
             }
+            System.out.println(" ");
 
 
         }
