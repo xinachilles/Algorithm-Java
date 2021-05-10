@@ -60,11 +60,14 @@ public class Parent {
         return false;
 
     }
+
     /*
         输入是int[][] input, input[0]是input[1] 的parent，比如 {{1,4}, {1,5}, {2,5}, {3,6}, {6,7}}会形成上面的图
                 第一问是只有0个parents和只有1个parent的节点
 
     */
+
+    /*
     public static int earliestAncestor(int[][] input, int x, int y){
         Map<Integer,List<Integer>> childToParents = new HashMap<>();
         for(int i=0;i<input.length;i++){
@@ -98,14 +101,57 @@ public class Parent {
         return result;
 
     }
+    */
+    public static int earliestAncestor(int[][] input, int x){
+        Map<Integer,List<Integer>> childToParents = new HashMap<>();
+        for(int i=0;i<input.length;i++){
+            childToParents.computeIfAbsent(input[i][1],a->new ArrayList<>()).add(input[i][0]);
+        }
+        List<Integer> previouslevel = new ArrayList<>();
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(x);
+
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            List<Integer> temp = new ArrayList<>();
+
+            for(int i = 0; i<size; i++) {
+                int child = queue.poll();
+
+                if (childToParents.containsKey(child)) {
+                    temp.addAll(childToParents.get(child));
+                }
+            }
+            queue.addAll(new ArrayList<>(temp));
+            if(temp.size()>0){
+                previouslevel = new ArrayList<>(temp);
+            }
+        }
+
+
+        return previouslevel.size()==0 ?-1:previouslevel.get(0);
+
+    }
+
+
+
     public static void main(String[] args){
-     int[][] input = new int[][]{{1,4}, {1,5}, {2,5}, {3,6}, {6,7}};
-     List<Integer> result = findNodesWithZeroOrOneParent(input);
-     for(int r: result){
-      //   System.out.println(r);
+     //int[][] input = new int[][]{{1,4}, {1,5}, {2,5}, {3,6}, {6,7}};
+     int[][] input = new int[][] { {1, 3}, {2, 3}, {3, 6}, {5, 6},
+             {5, 7}, {4, 5}, {4, 8}, {8, 10},{11,2}  };
+        List<Integer> result = findNodesWithZeroOrOneParent(input);
+     System.out.println("Question 1");
+        for(int r: result){
+        System.out.print(r);
+        System.out.print("|");
      }
-     boolean result2 = hasCommonAncestor(input,4,6);
-     int result3 = earliestAncestor(input,4,5);
+     System.out.println("");
+     System.out.println("Question 2");
+     boolean result2 = hasCommonAncestor(input,1,3);
+     System.out.println(result2);
+
+     int result3 = earliestAncestor(input,3);
+     System.out.println("Question 3");
      System.out.println(result3);
     }
 
