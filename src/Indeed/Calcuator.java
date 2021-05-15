@@ -1,5 +1,7 @@
 package Indeed;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class Calcuator {
@@ -71,9 +73,20 @@ public class Calcuator {
         return result;
 
     }
-
+   public static int basicCalculator3(String expression, Map<String,Integer> maps){
+        for(String key: maps.keySet()){
+            if(expression.indexOf(key)>=0){
+                expression.replaceAll(key,String.valueOf(maps.get(key)));
+            }
+        }
+        return basicCalculator2(expression);
+   }
     public static void main(String[] args) {
         int result = basicCalculator2("3+(5-5)" );
+        Map<String,Integer> maps = new HashMap<>();
+        maps.put("banana", 4);
+        maps.put("apple", 9);
+        //result = basicCalculator3()
         System.out.println(result);
     }
 }

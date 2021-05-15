@@ -9,8 +9,8 @@ their badge and who exited without their badge.
     *
     * */
 
-   public static List<List<String>> invalidBadgeRecords(List<String[]> records) {
-        if(records == null || records.size()==0){
+    public static List<List<String>> invalidBadgeRecords(List<String[]> records) {
+        if (records == null || records.size() == 0) {
             return null;
         }
         List<List<String>> result = new ArrayList<>();
@@ -18,7 +18,7 @@ their badge and who exited without their badge.
         Set<String> enter = new HashSet<>();
         Set<String> invalidEnter = new HashSet<>();
         Set<String> invalidExit = new HashSet();
-        for (String[] record : records){
+        for (String[] record : records) {
 
             String name = record[0];
             String action = record[1];
@@ -38,7 +38,7 @@ their badge and who exited without their badge.
             }
         }
         for (String name : enter) {
-                invalidExit.add(name);
+            invalidExit.add(name);
         }
         result.add(new ArrayList<>(invalidEnter));
         result.add(new ArrayList<>(invalidExit));
@@ -58,51 +58,52 @@ output: {
     *
     * */
 
-  public Map<String, List<String>>  frequentAccess(List<String[]>records) {
+    public Map<String, List<String>> frequentAccess(List<String[]> records) {
         if (records == null || records.size() == 0) {
             return null;
         }
-  //const result = [];
-  Map<String, List<String>> nameToTimes = new HashMap<>();
-       for(String[] record: records){
-           nameToTimes.computeIfAbsent(record[0],a->new ArrayList<>()).add(record[1]);
-       }
+        //const result = [];
+        Map<String, List<String>> nameToTimes = new HashMap<>();
+        for (String[] record : records) {
+            nameToTimes.computeIfAbsent(record[0], a -> new ArrayList<>()).add(record[1]);
+        }
         Map<String, List<String>> result = new HashMap<>();
-       for(String key: nameToTimes.keySet() ){
-           List<String> times = nameToTimes.get(key);
-           if(times.size()<3) continue;
-           Collections.sort(times,(a,b)-> timeDifference(a,b));
+        for (String key : nameToTimes.keySet()) {
+            List<String> times = nameToTimes.get(key);
+            if (times.size() < 3) continue;
+            Collections.sort(times, (a, b) -> timeDifference(a, b));
 
-           int start = 0;
-           int count = 1;
-           for(int i =1; i<times.size();i++){
-               if(timeDifference(times.get(start), times.get(i))<60){
-                  count++;
-               }else{
-                   start = i;
-                   count = 1;
-               }
-               if(count >=3){
-                   result.put(key,times.subList(start,i));
-                   return result;
-               }
-           }
+            int start = 0;
+            int count = 1;
+            for (int i = 1; i < times.size(); i++) {
+                if (timeDifference(times.get(start), times.get(i)) < 60) {
+                    count++;
+                } else {
+                    start = i;
+                    count = 1;
+                }
+                if (count >= 3) {
+                    result.put(key, times.subList(start, i));
+                    return result;
+                }
+            }
 
-       }
-       return null;
+        }
+        return null;
 
     }
 
-    private int  timeDifference(String a, String b) {
+    private int timeDifference(String a, String b) {
 
-      int aHour = (int)Math.floor(Integer.valueOf(a) / 100);
-      int  bHour = (int) Math.floor(Integer.valueOf(b) / 100);
-      int aMinute = Integer.valueOf(a) % 100;
-      int bMinute = Integer.valueOf(b) % 100;
-            return aHour * 60 + aMinute - (bHour * 60 + bMinute);
+        int aHour = (int) Math.floor(Integer.valueOf(a) / 100);
+        int bHour = (int) Math.floor(Integer.valueOf(b) / 100);
+        int aMinute = Integer.valueOf(a) % 100;
+        int bMinute = Integer.valueOf(b) % 100;
+        return aHour * 60 + aMinute - (bHour * 60 + bMinute);
     }
-    public static void main(String[] args){
-       String[][]records = new String[][]{
+
+    public static void main(String[] args) {
+        String[][] records = new String[][]{
                 {"Martha", "exit"},
                 {"Paul", "enter"},
                 {"Martha", "enter"},
@@ -116,13 +117,13 @@ output: {
                 {"Jennifer", "exit"}
         };
 
-       List<List<String >> result = invalidBadgeRecords(new ArrayList(Arrays.asList(records)));
-       for(List<String> r: result){
-           for(String r1 : r) {
-               System.out.print(r1 + ",");
-           }
-           System.out.println("    ");
-       }
+        List<List<String>> result = invalidBadgeRecords(new ArrayList(Arrays.asList(records)));
+        for (List<String> r : result) {
+            for (String r1 : r) {
+                System.out.print(r1 + ",");
+            }
+            System.out.println("    ");
+        }
 
     }
 }

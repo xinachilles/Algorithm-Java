@@ -113,12 +113,12 @@ The second and third rows and the first column do not match their respective ins
     rows1_1    =  [], [1], [1,2], [1], [2]
     columns1_1 =  [2,1], [1], [2], [1]
 */
-    public static boolean visValidNonogram(int[][]matrix, int[][] rows, int[][] cols) {
+    public static boolean visValidNonogram(int[][] matrix, int[][] rows, int[][] cols) {
         if (matrix == null || rows == null || cols == null) {
             return false;
         }
-  int  n = matrix.length;
-  int  m = matrix[0].length;
+        int n = matrix.length;
+        int m = matrix[0].length;
         if (n == 0 || n != rows.length || m != cols.length) {
             return false;
         }
@@ -127,9 +127,9 @@ The second and third rows and the first column do not match their respective ins
     }
 
     private static boolean isNonogramRowsValid(int[][] matrix, int[][] rowInstructions, int rows, int cols) {
-        for (int  i = 0; i < rows; i++) {
-            int  rowIndex = 0;
-            for (int  j = 0; j < cols; j++) {
+        for (int i = 0; i < rows; i++) {
+            int rowIndex = 0;
+            for (int j = 0; j < cols; j++) {
                 if (matrix[i][j] == 0) {
                     if (rowInstructions[i] == null || rowInstructions[i].length == 0) {
                         return false;
@@ -142,19 +142,19 @@ The second and third rows and the first column do not match their respective ins
                     }
                     // move col to find another black (0) cell
                     //if(rowIndex == rowInstructions[i].length-1){
-                      //  break;
-                   // }
+                    //  break;
+                    // }
                     j += rowInstructions[i][rowIndex++];
                 }
             }
-           if (rowIndex != rowInstructions[i].length) {
+            if (rowIndex != rowInstructions[i].length) {
                 return false;
             }
         }
         return true;
     }
 
-    private static boolean isNonogramColsValid(int[][]matrix, int[][]colInstructions, int rows, int cols) {
+    private static boolean isNonogramColsValid(int[][] matrix, int[][] colInstructions, int rows, int cols) {
         for (int j = 0; j < cols; j++) {
             int colIndex = 0;
             for (int i = 0; i < rows; i++) {
@@ -167,9 +167,9 @@ The second and third rows and the first column do not match their respective ins
                             return false;
                         }
                     }
-                   // if(colIndex == colInstructions[j].length-1){
-                     //   break;
-                   // }
+                    // if(colIndex == colInstructions[j].length-1){
+                    //   break;
+                    // }
                     i += colInstructions[j][colIndex++];
                 }
             }
@@ -182,20 +182,20 @@ The second and third rows and the first column do not match their respective ins
         return true;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         /*
         Example instructions #1
         */
-        int[][] matrix1 = new int[][]{ {1,1,1,1}, {0,1,1,1}, {0,1,0,0}, {1,1,0,1}, {0,0,1,1}};
+        int[][] matrix1 = new int[][]{{1, 1, 1, 1}, {0, 1, 1, 1}, {0, 1, 0, 0}, {1, 1, 0, 1}, {0, 0, 1, 1}};
         //int[][] matrix2 =  new int[][] { {1, 1},{0, 0},{0, 0 },{1, 0 }};
-       int[][] matrix3 = new int [][]{{1, 1},{0, 0}, {0, 0}, {1, 0}};
+        int[][] matrix3 = new int[][]{{1, 1}, {0, 0}, {0, 0}, {1, 0}};
         //int[][] rowInstruction = new int[][]{{}, {1}, {1,2}, {1}, {2}};
         //int [][] colInstruction = new int[][]{ {2,1}, {1}, {2}, {1}};
         //int[][] rowInstruction = new int[][]{ {}, {2}, {2}, {1}};
         //int[][] colInstruction = new int[][] {{1, 1}, {3}};
-        int [][] rowInstruction = new int[][]{{}, {2}, {2}, {1}};
-        int [][] colInstruction = new int[][] {{1, 1}, {3}};
-        boolean result = visValidNonogram (matrix3, rowInstruction, colInstruction);
+        int[][] rowInstruction = new int[][]{{}, {2}, {2}, {1}};
+        int[][] colInstruction = new int[][]{{1, 1}, {3}};
+        boolean result = visValidNonogram(matrix3, rowInstruction, colInstruction);
         System.out.println(result);
 
 
