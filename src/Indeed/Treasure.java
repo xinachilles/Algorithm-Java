@@ -34,6 +34,8 @@ public class Treasure {
 
         int rows = board.length;
         int cols = board[0].length;
+        // begin with the start point and call helper function recesively to search his neighbor ( left, right top and bottom)
+        // continue search if his neighbor is 0
         helper(board,rows, cols,r, c);
         for(int i = 0; i<rows; i++){
             for(int j = 0; j<cols;j++){
@@ -50,7 +52,7 @@ public class Treasure {
         if(r<0 || r>=rows || c<0 || c>=cols){
             return;
         }
-        if(board[r][c] == -1){
+        if(board[r][c] == -1 ){
             return;
         }
         board[r][c] =-1;
@@ -60,6 +62,8 @@ public class Treasure {
         helper(board, rows,cols,r,c-1);
     }
 
+    //
+
     public static List<List<int[]>> findAllTreasures(int[][] board, int[] start, int[] end) {
         if(board == null || board.length ==0){
             return null;
@@ -67,6 +71,7 @@ public class Treasure {
 
 
         int numberofTreasure = 0;
+        // first find how many treasure in the board
         for(int i = 0; i<board.length;i++){
             for(int j = 0; j<board[0].length;j++){
                 if(board[i][j] == 1){
@@ -75,6 +80,9 @@ public class Treasure {
             }
         }
         List<List<int[]>> result = new ArrayList<>();
+        // start at the start point and call the DFS function
+        // if his beighbor is 0 or 1, continue search
+        // if reach the desition and find we can take all the treasure, update result
         DFS(board,end,start,numberofTreasure,new ArrayList<>(),result);
 
         return result;
@@ -98,6 +106,7 @@ public class Treasure {
         if (r == destination[0] && c == destination[1]) {
             // if destination has treasure
             if (totalTreasure-temp == 0) {
+                // find the shortest path
                 if (solution.size() > 0 && solution.get(0).size() > path.size()) {
                     solution.clear();
                 }
@@ -106,7 +115,6 @@ public class Treasure {
                     solution.add(new ArrayList<>(path));
                 }
             }
-
             board[r][c] = temp;
             path.remove(path.size() - 1);
             return;

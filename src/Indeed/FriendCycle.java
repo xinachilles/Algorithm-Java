@@ -64,25 +64,28 @@ friendships = [
 */
 public static List<String> friendCycle2(String[] employees, String[] friendships){
     Map<Integer, List<Integer>> graph = new HashMap<>();
+    // deparment-> all empoyee id
     Map<String,List<Integer>> departmentToemployee = new HashMap<>();
+    // empoyee id -> deparemnt belong to
     Map<Integer,String> employeeToDepartment = new HashMap<>();
     buildFriendGraph(graph,friendships);
     buildEmployeeGraph(departmentToemployee,employeeToDepartment,employees);
 
     List<String> result = new ArrayList<>();
     for(String department: departmentToemployee.keySet()){
-
+        // how many employee in this depeartment
         int total = departmentToemployee.get(department).size();
         int anotherDepartment = 0;
         Set<Integer> friendset = new HashSet<>();
         for(int i =0; i<total;i++){
-            // all employee for this department
+            // all friend for those employee work in this department
             int id = departmentToemployee.get(department).get(i);
             if(!graph.containsKey(id)) continue;
             for(int friend: graph.get(id)){
                 friendset.add(friend);
             }
         }
+        // all the frined are from differetn department
         for(int id: friendset) {
             if (!employeeToDepartment.get(id).equals(department)) {
                 anotherDepartment++;

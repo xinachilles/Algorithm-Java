@@ -66,6 +66,7 @@ public class Calcuator {
                 sign = 1;
 
             } else if (expression.charAt(i) == ')') {
+                //result * sign+result
                 result = result * stack.pop() + stack.pop();
 
             }
@@ -82,7 +83,7 @@ public class Calcuator {
         return basicCalculator2(expression);
    }
     public static void main(String[] args) {
-        int result = basicCalculator2("3+(5-5)" );
+        int result = basicCalculator2("3+(1-1)" );
         Map<String,Integer> maps = new HashMap<>();
         maps.put("banana", 4);
         maps.put("apple", 9);

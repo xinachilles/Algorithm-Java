@@ -17,15 +17,15 @@ class Node{
     char[] chars = new char[5]; //定长5,反正总要有定长。
     int len; //表示数组里面实际有几个字母
     Node next;
-    public Node(){}
+
 }
 class LinkedList {
     Node head;
     int totalLen; //这个totalLen代表所有char的个数
 
-    public LinkedList(Node head, int total) {
+    public LinkedList(Node head) {
         this.head = head;
-        this.totalLen = total;
+       // this.totalLen = total;
         //可能totalLen是不给的，要遍历一遍去求。
         int count = 0;
         Node cur = head;
@@ -59,10 +59,12 @@ class LinkedList {
             return;
         }
         Node cur = head;
+        Node pre = null;
         // find the node corresponding to index
         while (cur != null && index >= 0) {
-            if (index >= cur.len) {
-                index -= cur.len;
+
+            if (index >= 5) {
+                index -= 5;
             } else {
                 // if the current node is full, move the last character to new node
                 if (cur.len == 5) {
@@ -81,20 +83,41 @@ class LinkedList {
                 cur.chars[index] = ch;
                 break;
             }
+            pre = cur;
             cur = cur.next;
         }
         if (cur == null) {
             Node newNode = new Node();
             newNode.chars[0] = ch;
             newNode.len = 1;
-            Node tail = new Node();
-            tail.next = head;
-            while (tail.next != null) {
-                tail = tail.next;
+            //Node tail = new Node();
+            //tail.next = head;
+           // while (tail.next != null) {
+              //  tail = tail.next;
+           // }
+            if(pre == null){
+                head = newNode;
+            }else{
+                pre.next = newNode;
             }
-            tail.next = newNode;
+            //tail.next = newNode;
         }
         totalLen += 1;
+    }
+
+    public void print(){
+        Node current = head;
+        int index = 0;
+        while (current!=null){
+            System.out.println("Current Node:" +index);
+            for(int i = 0; i<current.chars.length && current.chars[i]!='\u0000';i++){
+                System.out.print(current.chars[i]);
+               // System.out.print("|");
+            }
+            current = current.next;
+            index++;
+            System.out.println("");
+        }
     }
 
 
@@ -106,7 +129,12 @@ class LinkedList {
 
         n1.chars[0] = 'a';
         n1.chars[1] = 'b';
+        n1.chars[2] = 'c';
+        n1.chars[3] = 'd';
+        n1.chars[4] = 'e';
+
         n2.chars[0] = 'b';
+
         n3.chars[0] = 'a';
         n3.chars[1] = 'b';
         n3.chars[2] = 'c';
@@ -115,9 +143,17 @@ class LinkedList {
 
         n1.next = n2;
         n2.next = n3;
-        n1.len = 2;
+        n1.len = 5;
         n2.len = 1;
         n3.len = 5;
+
+        LinkedList list =  new LinkedList(n1);
+        list.insert('f',2);
+        list.print();
+        for(int i = 0; i<list.totalLen;i++){
+           System.out.print( list.get(i));
+        }
+
     }
 
     /* =============================================================================

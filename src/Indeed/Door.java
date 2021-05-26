@@ -14,9 +14,11 @@ their badge and who exited without their badge.
             return null;
         }
         List<List<String>> result = new ArrayList<>();
-        // 0 for exited, 1 for entered
+        // people who enter with the badge
         Set<String> enter = new HashSet<>();
+        // people enter without badge
         Set<String> invalidEnter = new HashSet<>();
+        // people leave without badge
         Set<String> invalidExit = new HashSet();
         for (String[] record : records) {
 
@@ -27,12 +29,14 @@ their badge and who exited without their badge.
                 if (!enter.contains(name)) {
                     enter.add(name);
                 } else {
+                    // if people already in the enter set means he leave without the badge
                     invalidExit.add(name);
                 }
             } else {
                 if (enter.contains(name)) {
                     enter.remove(name);
                 } else {
+                    // if people is not in the set means he enter without the badge
                     invalidEnter.add(name);
                 }
             }
@@ -58,11 +62,11 @@ output: {
     *
     * */
 
-    public Map<String, List<String>> frequentAccess(List<String[]> records) {
-        if (records == null || records.size() == 0) {
+    public static Map<String, List<String>> frequentAccess(String[][] records) {
+        if (records == null || records.length == 0) {
             return null;
         }
-        //const result = [];
+        // naem -> the list of time he swipe the bagde
         Map<String, List<String>> nameToTimes = new HashMap<>();
         for (String[] record : records) {
             nameToTimes.computeIfAbsent(record[0], a -> new ArrayList<>()).add(record[1]);
@@ -72,28 +76,31 @@ output: {
             List<String> times = nameToTimes.get(key);
             if (times.size() < 3) continue;
             Collections.sort(times, (a, b) -> timeDifference(a, b));
-
+            // find out who swip his badge within one hour
             int start = 0;
-            int count = 1;
+            List<String> timeWindows = new ArrayList<String>();
+            timeWindows.add(times.get(start));
+
             for (int i = 1; i < times.size(); i++) {
-                if (timeDifference(times.get(start), times.get(i)) < 60) {
-                    count++;
+                if (Math.abs(timeDifference(times.get(start), times.get(i)))< 60) {
+                    timeWindows.add(times.get(i));
                 } else {
+                    if(timeWindows.size()>3) break;
                     start = i;
-                    count = 1;
+                    timeWindows = new ArrayList<String>();
+                    timeWindows.add(times.get(i));
                 }
-                if (count >= 3) {
-                    result.put(key, times.subList(start, i));
-                    return result;
-                }
+            }
+            if (timeWindows.size() >= 3) {
+                result.put(key, timeWindows);
             }
 
         }
-        return null;
+        return result;
 
     }
 
-    private int timeDifference(String a, String b) {
+    private static int timeDifference(String a, String b) {
 
         int aHour = (int) Math.floor(Integer.valueOf(a) / 100);
         int bHour = (int) Math.floor(Integer.valueOf(b) / 100);
@@ -103,7 +110,7 @@ output: {
     }
 
     public static void main(String[] args) {
-        String[][] records = new String[][]{
+        String[][] records1 = new String[][]{
                 {"Martha", "exit"},
                 {"Paul", "enter"},
                 {"Martha", "enter"},
@@ -117,13 +124,45 @@ output: {
                 {"Jennifer", "exit"}
         };
 
-        List<List<String>> result = invalidBadgeRecords(new ArrayList(Arrays.asList(records)));
+        List<List<String>> result = invalidBadgeRecords(new ArrayList(Arrays.asList(records1)));
         for (List<String> r : result) {
             for (String r1 : r) {
                 System.out.print(r1 + ",");
             }
-            System.out.println("    ");
+            System.out.println("");
         }
+        System.out.println("question 2");
+        //String[][] record2 ={ {"James", "1300"}, {"Martha", "1600"}, {"Martha", "1620"}, {"Martha", "1530"}};
+        String[][] record2 = {{"Paul", "1355"},
+                {"Jennifer", "1910"},
+                {"John", "830"},
+                {"Paul", "1315"},
+                {"John", "1615"},
+                {"John", "1640"},
+                {"John", "835"},
+                {"Paul", "1405"},
+                {"John", "855"},
+                {"John", "930"},
+                {"John", "915"},
+                {"John", "730"},
+                {"John", "940"},
+                {"Jennifer", "1335"},
+                {"Jennifer", "730"},
+                {"John", "1630"},
+
+        };
+
+        Map<String, List<String>> result2 = frequentAccess(record2);
+        for(String key : result2.keySet()){
+            System.out.print(key);
+            System.out.print("|");
+            for(String value: result2.get(key)){
+                System.out.print(value);
+                System.out.print("|");
+            }
+            System.out.println("");
+        }
+
 
     }
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Vector {
+    //data can be save as a node, the node class has 3 variable value, index and next point point to the next node
+    // vector also has a size variable and head variable indicate the first node
     class IndexOutOfRangeError extends Exception{
         public IndexOutOfRangeError(String errorMessage){
             super(errorMessage);
@@ -25,7 +27,8 @@ public class Vector {
     public Vector(int size) {
         this.size = size;
     }
-
+  // find the fist node which index greate or equal to the index
+  // insert the new node in front of the current node
     public void set(int index, double value) throws IndexOutOfRangeError {
 
             if (index >= this.size) {

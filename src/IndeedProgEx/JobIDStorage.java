@@ -1,4 +1,4 @@
-package IndeedOnsite;
+package IndeedProgEx;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,8 +41,8 @@ Follow Up
 =============================================================================*/
 /*
 全放进map里面空间就不够了，面试中不让用map。
-        long是64个bit。
-        64bit的操作系统里面，16GB的内存如何存下4 Billion个jobid。
+        long是64个bit。=
+        64bit的操作系统里面，16GB的内存如何存下4 Billion个jobid。(2^30)
         还有用16MB怎么存下一大堆jobid。
         （意思是怎么存比较节约内存）。
         expire的job id比较多，可以考虑如何压缩去存expire job id。
@@ -59,6 +59,17 @@ Follow Up
         检查某个job id是否expire，只需要检查某一位上是不是1就可以。
         这样的话，存储空间从16位降到了4位。
         这里面的hash function就是 id & 1111
+
+
+        Xin:
+
+        ( if we store each job id wiht long type, we need (64bit/8)*4G = 32G
+        1. change the job id type to int- 32 bit
+        we can use bitset, we just need a 32b
+
+        0 is not expire, 1 is expire, we just need a 2^30 * 4 bit array and each bit is for one job id
+        so for each job id we can reduce the storage from 64bit to 1 bit, total we just need 4GB storeage for 4billion
+ */
 /* =============================================================================
 Follow Up code
 =============================================================================*/
@@ -91,6 +102,7 @@ interface{
         }
         然你实现一下就行了。然后如果有很多JobId， 要想办法节省空间之类的。
 <B> jobid storage, 就是给你jobid type是long，然后在64 bit的操作系统里，16gb内存 如何能存下4 Billion个jobid。
+
         然后实现expire 和isExpire的操作，这个其实比较次要的，更多的是比较open的讨论。
 <C> 第二问 让实现方法 isExpire ,和expire 但是其实这不是重点，hashmap，大家都能实现，关键是如何用最节省内存的方法存下来，
 <D> 给一堆jobid, implement两个function:

@@ -1,12 +1,14 @@
 package Indeed;
 
-import javafx.scene.shape.LineTo;
 
-import java.sql.SQLSyntaxErrorException;
 import java.util.*;
 
 public class Parent {
+    /*
+           输入是int[][] input, input[0]是input[1] 的parent，比如 {{1,4}, {1,5}, {2,5}, {3,6}, {6,7}}会形成上面的图
+                   第一问是只有0个parents和只有1个parent的节点
 
+       */
    private static List<Integer> findNodesWithZeroOrOneParent(int[][] input){
         if(input == null || input.length ==0){
             return null;
@@ -27,13 +29,14 @@ public class Parent {
 
        return result;
     }
-
+/*两个节点是否有公共祖先*/
     public static boolean hasCommonAncestor(int[][]input, int x, int y){
           // build a map of child ->their parents
         Map<Integer,List<Integer>> childToParents = new HashMap<>();
         for(int i=0;i<input.length;i++){
             childToParents.computeIfAbsent(input[i][1],a->new ArrayList<>()).add(input[i][0]);
         }
+        // contains all parents for node x
         Set<Integer> parentsSet = new HashSet<>();
         Queue<Integer> queue = new LinkedList<>();
         queue.add(x);
@@ -45,11 +48,13 @@ public class Parent {
                queue.addAll(childToParents.get(child));
            }
         }
+// then go through all parents for node y find out if they have common ancestor
 
         queue.add(y);
         while(!queue.isEmpty()){
             int child = queue.poll();
-            if(parentsSet.contains(child)){
+            //1,3 will return false
+            if(parentsSet.contains(child) && (childToParents.containsKey(child) && childToParents.get(child).size()>0) ){
                 return true;
             }
             if(childToParents.containsKey(child)){
@@ -60,12 +65,6 @@ public class Parent {
         return false;
 
     }
-
-    /*
-        输入是int[][] input, input[0]是input[1] 的parent，比如 {{1,4}, {1,5}, {2,5}, {3,6}, {6,7}}会形成上面的图
-                第一问是只有0个parents和只有1个parent的节点
-
-    */
 
     /*
     public static int earliestAncestor(int[][] input, int x, int y){
@@ -110,7 +109,7 @@ public class Parent {
         List<Integer> previouslevel = new ArrayList<>();
         Queue<Integer> queue = new LinkedList<>();
         queue.add(x);
-
+        //go through the graph from bottom to top to find the earliest ancestor
         while(!queue.isEmpty()){
             int size = queue.size();
             List<Integer> temp = new ArrayList<>();

@@ -1,10 +1,18 @@
 package Indeed;
-
-
-
 import java.util.*;
 
 public class Domin {
+    /*
+    * A website domain like "discuss.leetcode.com" consists of various subdomains. At the top level, we have "com", at the next level,
+    * we have "leetcode.com", and at the lowest level, "discuss.leetcode.com".
+    * When we visit a domain like "discuss.leetcode.com", we will also visit the parent domains "leetcode.com" and "com" implicitly.
+
+Now, call a "count-paired domain" to be a count (representing the number of visits this domain received), followed by a space, followed by the address. An example of a count-paired domain might be "9001 discuss.leetcode.com".
+
+We are given a list cpdomains of count-paired domains. We would like a list of count-paired domains, (in the same format as the input, and in any order), that explicitly counts the number of visits to each subdomain.
+
+
+    * */
     public List<String> subdomainVisits(String[] cpdomains) {
         Map<String,Integer> map = new HashMap<>();
         for(String cp: cpdomains){
@@ -13,6 +21,8 @@ public class Domin {
 
             for(int i = 0; i<domin.length();i++){
                 if(domin.charAt(i) == '.'){
+                    // get all subdomin and cal his count
+                    // google.mail.com -> subdomin mail.com, com
                     String subDomin = domin.substring(i+1,domin.length());
                     map.put(subDomin,map.getOrDefault(subDomin,0)+count);
                 }
@@ -38,7 +48,7 @@ public class Domin {
     //输出两个user的最长连续且相同的访问记录。
     //["xys.html", "7hsaa.html"]
     private static List<String> longestCommonContinuous(String[]history1, String[] history2){
-       // the longest continue common subarray end with i,j
+       // the longest continue common subarray end with hitory1[i-1], and hostory [j-1]
         int[][] longest = new int[history1.length+1][history2.length+1];
         int max = 0;
         int end = 0;
@@ -77,7 +87,9 @@ were from users who made a purchase.
     *
     * */
    public static List<String> adsConversionRate(String[]completedPurchaseUserIds,String[]adClicks, String[]allUserIps) {
+        // ad  and user id who clicked the ad
         Map<String, List<Long>> adToUserID = new HashMap<>();
+        // user and ip address
         Map<String, Long> IPToUserid = new HashMap<>();
         Set<Long> completedPurchaseSet = new HashSet<>();
 
@@ -100,7 +112,9 @@ were from users who made a purchase.
         List<String> result = new ArrayList<>();
 
         for(String key: adToUserID.keySet() ){
+            // how many user clicked this ad
             int total = adToUserID.get(key).size();
+            // how many user acturaly bought something
             int purched = 0;
             for(Long id : adToUserID.get(key)){
                 if(completedPurchaseSet.contains(id)){

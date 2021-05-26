@@ -35,6 +35,7 @@ class Num{
     Stream stream;
     public Num(Stream stream){
         this.stream = stream;
+        // current value of the stream
         this.val = stream.getValue();
     }
 }
@@ -52,7 +53,7 @@ class MergeKSortedStreams {
     public List<Integer> getNumberInAtLeastKStream(List<Stream> lists, int k){
         List<Integer> res = new ArrayList<>();
         if (lists == null || lists.size() == 0) return res;
-
+        // heap is sorted by the first value of the stream in ascending order
         PriorityQueue<Num> minHeap = new PriorityQueue<Num>((a,b)-> a.val-b.val);
 
         //先把所有的stream放进heap里面
@@ -78,7 +79,7 @@ class MergeKSortedStreams {
                     break;
                 }
             }
-            //更新其他stream的头部，就是把指针往后挪，相同的数字就计数了。
+            //scan other streams in the heap 。
             while (!minHeap.isEmpty() && curValue == minHeap.peek().val){
                 count++;
                 Num num = minHeap.poll();
@@ -86,6 +87,7 @@ class MergeKSortedStreams {
 
                 while (num.stream.move()){
                     int nextVal = num.stream.getValue();
+                    // skip the dupicate value in the same stream
                     if (curValue == nextVal){
                         continue;
                     }
@@ -106,9 +108,9 @@ class MergeKSortedStreams {
 
     public static void main(String[] args) {
         MergeKSortedStreams test = new MergeKSortedStreams();
-        Integer[] arr1 = {1,2,3,4};
-        Integer[] arr2 = {2,5,6};
-        Integer[] arr3 = {2,5,7};
+        Integer[] arr1 = {1,1,2,3,3,4,5};
+        Integer[] arr2 = {1,2,5};
+        Integer[] arr3 = {1,2,6};
 
         List<Integer> l1 = Arrays.asList(arr1);
         List<Integer> l2 = Arrays.asList(arr2);

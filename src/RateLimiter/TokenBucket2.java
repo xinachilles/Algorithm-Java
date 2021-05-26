@@ -2,7 +2,7 @@ package RateLimiter;
 
 import org.testng.reporters.jq.Main;
 
-public class TokenBucket2 {
+public class TokenBucket2  {
     private final long maxBucketSize;
     private final long refillRate;
 

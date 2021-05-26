@@ -7,12 +7,15 @@ public class Rectangle {
     /*there is an image filled with 0s and 1s. There is at most one rectangle in this image filled with 0s,
     find the rectangle. Output could be the coordinates of top-left and bottom-right elements of the rectangle,
     or top-left element, width and height.
-    * */
+ 把10秒内的数据合成一个   * */
 
    public static List<int[]> findOneRectangle(int[][] board){
        List<int[]> result= new ArrayList<>();
        for (int i = 0; i < board.length; i++) {
            for (int j = 0; j < board[0].length; j++) {
+               // go through the board and find first 0 itme and it is the start point of rectangle
+               // then scan the board begin with this start point from left to right and from top to bottom
+               // to find a all 0 recetangle
                if (board[i][j] == 0) {
                    result.add(new int[]{i,j});
 
@@ -80,6 +83,8 @@ public class Rectangle {
         List<List<int[]>> result = new ArrayList<>();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
+                // first go through the board find the first 0 element and call floodFillDFS function to search its
+                // neighbor ( his left, right top and bottom) and find all 0 element
                 if (board[i][j] == 0) {
                     List<int[]> temp = new ArrayList<>();
                     floodFillDFS(i, j, board,temp);

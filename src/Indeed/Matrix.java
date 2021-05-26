@@ -7,7 +7,7 @@ public class Matrix {
     /*
      * 给一个N*N的矩阵，判定是否是有效的矩阵。有效矩阵的定义是每一行或者每一列的数字都必须正好是1到N的数。输出一个bool。
      * */
-    boolean isValidMatrix(int[][] matrix) {
+  public static boolean isValidMatrix(int[][] matrix) {
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
             return false;
         }
@@ -105,7 +105,7 @@ The second and third rows and the first column do not match their respective ins
 
     * */
 /*
-    matrix1 = [[1,1,1,1],
+    matrix1 =[[1,1,1,1],
             [0,1,1,1],
             [0,1,0,0],
             [1,1,0,1],
@@ -131,22 +131,24 @@ The second and third rows and the first column do not match their respective ins
             int rowIndex = 0;
             for (int j = 0; j < cols; j++) {
                 if (matrix[i][j] == 0) {
+                    // if there is no instruction for current row, return false
                     if (rowInstructions[i] == null || rowInstructions[i].length == 0) {
                         return false;
                     }
-                    // rows[1,2], first find a single run of 1 back cell
+                    // rows[1,2], first find a single item of 1 back cell-- 0 cell
                     for (int k = 0; k < rowInstructions[i][rowIndex]; k++) {
                         if (j + k >= cols || matrix[i][j + k] != 0) {
                             return false;
                         }
                     }
-                    // move col to find another black (0) cell
+                    // move next col to find another black (0) cell
                     //if(rowIndex == rowInstructions[i].length-1){
                     //  break;
                     // }
                     j += rowInstructions[i][rowIndex++];
                 }
             }
+            // reach at the end of row but still have instructions, ended early than expected,return false
             if (rowIndex != rowInstructions[i].length) {
                 return false;
             }
@@ -159,9 +161,11 @@ The second and third rows and the first column do not match their respective ins
             int colIndex = 0;
             for (int i = 0; i < rows; i++) {
                 if (matrix[i][j] == 0) {
+                    // if there is no instruction for current col, return false
                     if (colInstructions[j].length == 0) {
                         return false;
                     }
+                    // cols[1,2], first find a single item of 1 back cell-- 0 cell in current col
                     for (int k = 0; k < colInstructions[j][colIndex]; k++) {
                         if (i + k >= rows || matrix[i + k][j] != 0) {
                             return false;
@@ -170,6 +174,8 @@ The second and third rows and the first column do not match their respective ins
                     // if(colIndex == colInstructions[j].length-1){
                     //   break;
                     // }
+
+                    // move next row to find another black (0) cell in current col
                     i += colInstructions[j][colIndex++];
                 }
             }
@@ -183,6 +189,12 @@ The second and third rows and the first column do not match their respective ins
     }
 
     public static void main(String[] args) {
+
+        int[][] matrix = new int[][]{{1000,2,0},{-1000,2,3},{1,2,3}};
+        boolean result1 = isValidMatrix(matrix);
+
+
+
         /*
         Example instructions #1
         */
@@ -195,8 +207,10 @@ The second and third rows and the first column do not match their respective ins
         //int[][] colInstruction = new int[][] {{1, 1}, {3}};
         int[][] rowInstruction = new int[][]{{}, {2}, {2}, {1}};
         int[][] colInstruction = new int[][]{{1, 1}, {3}};
-        boolean result = visValidNonogram(matrix3, rowInstruction, colInstruction);
-        System.out.println(result);
+        boolean result2 = visValidNonogram(matrix3, rowInstruction, colInstruction);
+        System.out.println(result1);
+
+
 
 
     }
