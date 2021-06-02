@@ -11,6 +11,21 @@ Given n sorted stream, and a constant number k. The stream type is like iterator
 
         Note: In the interview, we should use min heap method
  */
+
+/*
+suppose we have m stream and each stream have n item
+* hashamp solution, class {int value int index (from which stream} O(n*m)
+* put all item to a list, O(n*m)
+* hash map O(n*m)
+* sort the finally result = mnlog(mn)
+
+for heap solucton: 1. build a heap = logm
+finally each node need to be pushed into heap once mn*logm
+
+K Stream 那一轮？如果假设有M个Stream，每个Stream的平均长度是N的话，那么如果用HashMap来做的话，
+时间复杂度的话是O(MN + MNlog(MN)) 遍历+排序，空间复杂度是O(MN),
+如果用heap来做的话，时间复杂度是O(MNlog(M))，空间复杂度是 O(M), 请问楼主这么分析是不是就够了？
+* */
 /*=============================================================================*/
 
 import java.util.*;
@@ -53,7 +68,7 @@ class MergeKSortedStreams {
     public List<Integer> getNumberInAtLeastKStream(List<Stream> lists, int k){
         List<Integer> res = new ArrayList<>();
         if (lists == null || lists.size() == 0) return res;
-        // heap is sorted by the first value of the stream in ascending order
+        // smallest number will be on the top
         PriorityQueue<Num> minHeap = new PriorityQueue<Num>((a,b)-> a.val-b.val);
 
         //先把所有的stream放进heap里面
@@ -62,7 +77,7 @@ class MergeKSortedStreams {
                 minHeap.offer(new Num(s));
             }
         }
-
+        // we pop the first element
         while (!minHeap.isEmpty()){
             Num cur = minHeap.poll();
             int curValue = cur.val;
