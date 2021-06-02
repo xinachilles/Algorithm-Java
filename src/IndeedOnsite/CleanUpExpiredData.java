@@ -1,4 +1,4 @@
-package IndeedProgEx;
+package IndeedOnsite;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +20,9 @@ code
 //好像写的不太好，如果expire，就可以丢了，不需要继续存在map里面
 //所以可以改成map remove expire jobid，但这样就不用map了，用个set就行。
 //这也太容易了。
-class JobIDStorage{
+class CleanUpExpiredData {
     Map<Long, Boolean> record = new HashMap<>();
-    public JobIDStorage(List<Long> jobids){
+    public CleanUpExpiredData(List<Long> jobids){
         for (Long id: jobids) {
             record.put(id, true);
         }
@@ -63,12 +63,16 @@ Follow Up
 
         Xin:
 
-        ( if we store each job id wiht long type, we need (64bit/8)*4G = 32G
-        1. change the job id type to int- 32 bit
+        ( if we store each job id with long type, we need (64bit/8)*4G = 32G
+        1. change the job id type to int- 32 bit -- 4 billion job id don't need long, int32 is enough
         we can use bitset, we just need a 32b
 
-        0 is not expire, 1 is expire, we just need a 2^30 * 4 bit array and each bit is for one job id
-        so for each job id we can reduce the storage from 64bit to 1 bit, total we just need 4GB storeage for 4billion
+        0 is not expire, 1 is expire, we just need a 2^30 *4 bit array and each bit is for one job id
+        so for each job id we can reduce the storage from 64bit to 1 bit, total we just need 4GB/8 = 500MB storeage for 4billion
+
+        create a set only remember the ids are not expire and use a bloom filter, if the bloom filter return false, that means the id is not in the set
+        will return false directly,
+        if bloom filter return true then check the set  if the id is expire or not
  */
 /* =============================================================================
 Follow Up code

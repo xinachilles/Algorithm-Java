@@ -46,7 +46,7 @@ public class Python {
                 }
             }
             else {
-                // delete all statement and his control statement
+                // delete all statement and his control statement; delete all nested control statements
                 while (!stack.isEmpty() && getIndent(stack.peek()) > level){
                     stack.pop();
                 }
@@ -86,7 +86,7 @@ public class Python {
 
 
 /*============= Following Code Credit to Zhu Siyao ===============*/
-
+/*
     public static boolean valid_python_indentation(List<String> inputs){
         Stack<Integer> stack = new Stack<>();
         for(int i=0;i<inputs.size();i++){
@@ -113,7 +113,7 @@ public class Python {
         String result = str.trim();
         return result;
     }
-
+*/
 
 }
 /* =============================================================================

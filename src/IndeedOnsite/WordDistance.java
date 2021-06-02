@@ -46,22 +46,29 @@ Follow Up code
       //  b.每次遇到目标词的时候，把两个词一样的情况单独挑出来。更小id往高跳。其他情况就是基本情况。
 
 // question 2
-    Map<String, List<Integer>> record = new HashMap<>();
+    // map key is the string and value is the all position in the list
+    Map<String,List<Integer>> wordMap;
+    Map<String, Integer> shortestMap;
     public  WordDistance(String[] words) {
+        wordMap = new HashMap<>();
+        shortestMap = new HashMap<>();
         for(int i = 0; i < words.length; i++){
-            String cur = words[i];
-            List<Integer> list = new ArrayList<>();
-            if(record.containsKey(cur)){
-                list = record.get(cur);
-            }
-            list.add(i);
-            record.put(cur, list);
+            wordMap.computeIfAbsent(words[i],a->new ArrayList<>()).add(i);
         }
     }
 
     public int shortest(String word1, String word2) {
-        List<Integer> l1 = record.get(word1);
-        List<Integer> l2 = record.get(word2);
+        String key1 = word1+","+word2;
+        String key2 = word2+","+word1;
+        if(shortestMap.containsKey(key1)){
+            return shortestMap.get(key1);
+        }
+        if(shortestMap.containsKey(key2)){
+            return shortestMap.get(key2);
+        }
+
+        List<Integer> l1 = wordMap.get(word1);
+        List<Integer> l2 = wordMap.get(word2);
         int res = Integer.MAX_VALUE;
         if(l1 == null || l2 == null) return res;
 
@@ -76,6 +83,8 @@ Follow Up code
                 p2++;
             }
         }
+        shortestMap.put(key1,res);
+        shortestMap.put(key2,res);
         return res;
     }
 }

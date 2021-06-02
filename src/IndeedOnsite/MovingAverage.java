@@ -16,6 +16,30 @@ Given a stream of input, and a API int getNow() to get the current time stamp,
 /* =============================================================================
 code
 =============================================================================*/
+/*
+*
+
+方法1：可以每次record的时候，对queue进行一次过滤，把超过5分钟的entry删掉，然后call getAverage()的时候，再进行一次过滤
+这个方法的好处是，把需要过滤的元素平摊到了每一次record上，最后call getAverage()的时候，需要规律的元素会少一些
+tradeoff就是，会拉低每次record的效率，因为每次record都在过滤
+
+方法2：每次call getAverage()的时候，对queue进行一次整体过滤
+好处在于，record的效率会相对快，因为不用去过滤掉过期的元素
+缺点就是，有可能会内存不够，因为过滤这个action只发生在getAverage()的时候
+个人建议，和面试官讨论需求，尽可能多的提供解决方案，提出tradeoff，选最符合需求的方案
+
+follow up: 我们需要找median，就是中位数
+其实就是一个find median in unsorted array
+方法也有两种：
+方法1：quick select，每次平均速度O（n），最坏速度O(n^2)，如果需要call n次的话，就是n^2和n^3
+方法2：max/min heap，总体速度O(nLogn)
+// there are two heap
+// if the value less then top of the max heap push it to max heap
+//
+我提出了，可以根据需求来决定用那一种，如果找median的次数没有那么多，那么选quick select，因为单次的平均速度是O(n)
+如果call的次数比较多，那么方法2比较好
+面试官表示满意，最后留了10分钟聊天
+* */
 class Event{
     int val;
     int time;
@@ -58,7 +82,6 @@ public class MovingAverage {
 
         return 0.0;
     }
-
 
     //实现find Median，其实O1操作的话，要始终维护两个heap，这样塞进去会很慢
 //原有基础上实现的话，那就直接quick select的办法了。

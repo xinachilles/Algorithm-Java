@@ -51,12 +51,13 @@ public class ProfileSystem {
             //version id -> profile
             // profile = map < file->value>
             // if we want to sort the version id, we can use treemap, a map is sorted according to the key
-            TreeMap<Integer, Map<String, String>> versionToMap;
-
+            //TreeMap<Integer, Map<String, String>> versionToMap;
+            Map<Integer,Map<String,String>> versionToMap;
             public Profile(String id) {
                 this.id = id;
                 this.version = 1;
-                versionToMap = new TreeMap<>();
+                //versionToMap = new TreeMap<>();
+                versionToMap = new HashMap<>();
                 versionToMap.put(1, new HashMap<>());
             }
         }
@@ -75,15 +76,22 @@ public class ProfileSystem {
             } else {
                 Profile profile = profiles.get(profileId);
                 Map<String, String> fields = profile.versionToMap.get(profile.version);
-                //if (fields.containsKey(field)) {
+                /*
+                * update(ABC, "skills", "java")------>对应版本1
+                  update(ABC, "skills", "python")------>对应版本2，因为同样的key里面增加了新的元素
+                  update(ABC, "education", "USC")------>对应版本2，因为education这个key是新key
+
+                * */
+                //如果我们call Get(ABC, 版本2)，那么应该返回{ABC:{"skills" : "java, python", "education": "USC"}}
+                if (fields.containsKey(field)) {
                     profile.versionToMap.put(profile.version + 1, new HashMap<>(fields));
                     profile.version++;
-                   // profile.versionToMap.get(profile.version).put(field, fields.get(field) + ", " + value);
-                    profile.versionToMap.get(profile.version).put(field, value);
-                //} else {
-                  //  fields.put(field, value);
+                    profile.versionToMap.get(profile.version).put(field, fields.get(field) + ", " + value);
+
+                } else {
+                    fields.put(field, value);
                 }
-            //}
+            }
         }
         //The floorEntry(K key) method is used to return a key-value mapping associated with the greatest key less than or equal to the given key, or null if there is no such key.
         public String get(String profileId, int version) {
@@ -119,6 +127,15 @@ public class ProfileSystem {
                 }
             }
         }
+
+    public static void main(String[] args) {
+       ProfileSystem resume = new ProfileSystem();
+       resume.update("ABC","skills","java");
+       resume.update("ABC","skills","python");
+       resume.update("ABC", "education", "USC");
+
+       System.out.println(resume.get("ABC",2));
+    }
     }
 
 

@@ -32,21 +32,21 @@ public class BTtoArray {
         //BFS一下就压缩好了
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
-        Queue<Integer> idxQueue = new LinkedList<>();
+        Queue<Integer> indexQueue = new LinkedList<>();
         //这里如果是1开头,那么就是(2i, 2i+1),如果是0开头,就是(2i+1,2i+2),其实1,2,3一下就看出来了。
-        idxQueue.offer(0);
+        indexQueue.offer(0);
 
         while (!queue.isEmpty()){
             TreeNode cur = queue.poll();
-            Integer curI = idxQueue.poll();
+            Integer curI = indexQueue.poll();
             heap[curI] = cur.val;
             if (cur.left != null){
                 queue.offer(cur.left);
-                idxQueue.offer(2*curI+1);
+                indexQueue.offer(2*curI+1);
             }
             if (cur.right != null){
                 queue.offer(cur.right);
-                idxQueue.offer(2*curI+2);
+                indexQueue.offer(2*curI+2);
             }
         }
 
@@ -106,6 +106,7 @@ public class BTtoArray {
         }
     }
 }
+
 /* =============================================================================
 Follow Up
 =============================================================================*/

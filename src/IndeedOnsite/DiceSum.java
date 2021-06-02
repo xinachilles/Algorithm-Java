@@ -65,6 +65,7 @@ public double getPossibility2(int dice, int target){
         return 0.0;
         }
         double total =  Math.pow(6, dice); //这里注意一下，pow的返回类型是double
+      // memo[i][j] how many ways we can get the target sum j if we use i dices
         double[][] memo = new double[dice+1][target+1];
         double count = dfsMemo(dice, target, memo);
     /*
@@ -88,11 +89,11 @@ public double dfsMemo(int dice, int target, double[][] memo){
             return 0;
         }
         if (memo[dice][target] != 0){
-        return memo[dice][target];
+            return memo[dice][target];
         }
 
         for (int i = 1; i <= 6; i++){
-        res += dfsMemo(dice-1, target - i, memo);
+            res += dfsMemo(dice-1, target - i, memo);
         }
         //这一步是更新记忆矩阵
         memo[dice][target] = res;
