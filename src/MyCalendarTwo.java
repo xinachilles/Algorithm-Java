@@ -3,40 +3,24 @@ import java.util.TreeMap;
 
 public class MyCalendarTwo {
     // event and if merge
-    TreeMap<int[], Boolean> books = new TreeMap<int[],Boolean>((a,b)->a[0]-b[0]);
+    TreeMap<Integer, Integer> books = new TreeMap<Integer, Integer>();
 
     public boolean book(int start, int end) {
-        int[] book = new int[]{start,end};
-        Map.Entry<int[], Boolean> floor = books.floorEntry(book);
-        Map.Entry<int[], Boolean> cell = books.ceilingEntry(book);
-        boolean floorOverlap = false;
-        boolean cellOverlap = false;
+       books.put(start,books.getOrDefault(start,0)+1);
+       books.put(end, books.getOrDefault(end,0)-1);
+       int count = 0;
+       for(Map.Entry<Integer,Integer> entry: books.entrySet()){
+           count += entry.getValue();
+           if(count>2){
+               books.put(start, books.get(start)-1);
+               if(books.get(start)  ==0) books.remove(start);
 
-        if(floor!=null && start < floor.getKey()[1]){
-            if(floor.getValue()) return false;
-            floorOverlap = true;
-        }
-        if(cell !=null && end >cell.getKey()[0]){
-            if(cell.getValue()) return false;
-            cellOverlap = true;
-        }
+               books.put(end, books.get(end)+1);
+               if(books.get(end) == 0) books.remove(end);
 
-        if(floorOverlap && cellOverlap){
-            books.put(floor.getKey(),true);
-            books.put(cell.getKey(),true);
-            books.put(book,true);
-        }else if(floorOverlap){
-            books.put(floor.getKey(),true);
-            books.put(book,true);
-        }else if(cellOverlap){
-            books.put(cell.getKey(),true);
-            books.put(book,true);
-        }else{
-            books.put(book,false);
-        }
-
-        return true;
-
-
+               return  false;
+           }
+       }
+       return false;
     }
 }
