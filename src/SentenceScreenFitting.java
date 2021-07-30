@@ -36,4 +36,25 @@ public class SentenceScreenFitting {
 
 
     }
+
+    public int wordsTyping2(String[] sentence, int rows, int cols) {
+        String wholeString = String.join(" ", sentence) + " ";
+
+        int totalLength = 0, sentenceLength = wholeString.length();
+
+        for (int i = 0; i < rows; i++) {
+            totalLength += cols;
+
+
+            if (wholeString.charAt(totalLength % sentenceLength) == ' ') {
+                totalLength++;
+            } else {
+                while (totalLength > 0 && wholeString.charAt((totalLength-1) % sentenceLength) != ' ') {
+                    totalLength--;
+                }
+            }
+        }
+
+        return totalLength / sentenceLength;
+    }
 }

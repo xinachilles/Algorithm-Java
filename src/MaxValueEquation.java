@@ -13,23 +13,27 @@ public class MaxValueEquation {
         if(points == null || points.length == 0){
             return 0;
         }
-        Deque<Integer> deque = new ArrayDeque<>();
+        // deque will store the a {y-x, x }pair
+        Deque<int[]> deque = new ArrayDeque<>();
         int result = Integer.MIN_VALUE;
-        deque.addLast(0);
-        // deque will store the index of point
-        for(int i = 1; i<points.length;i++){
+       // deque.addLast(0);
+
+        for(int[]point: points){
+            int x = point[0];
+            int y = point[1];
             // pop all the point which points[i][0] - peek[0]>k
-            while(!deque.isEmpty() && points[i][0]- points[deque.peek()][0]>k){
+            while(!deque.isEmpty() && x- deque.peek()[0]>k){
                 deque.removeFirst();
             }
             if(!deque.isEmpty()){
-                result = Math.max(result, points[i][1]+points[i][0]+  points[deque.peek()][1]-points[deque.peek()][0]);
+                result = Math.max(result, x+y+ deque.peek()[1]-deque.peek()[0]);
             }
             // find the max point from i to i-k which yi-xi is max
-            while (!deque.isEmpty() && points[i][1]-points[i][0] > points[deque.peek()][1]-points[deque.peek()][0]){
+            // only different deque with the pq, for pq we don't need to do this step
+            while (!deque.isEmpty() && y-x > deque.peek()[1]-deque.peek()[0]){
                 deque.removeLast();
             }
-            deque.addLast(i);
+            deque.addLast(new int[]{y-x,x});
         }
         return result;
     }

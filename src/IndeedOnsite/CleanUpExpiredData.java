@@ -68,7 +68,7 @@ Follow Up
         we can use bitset, we just need a 32b
 
         0 is not expire, 1 is expire, we just need a 2^30 *4 bit array and each bit is for one job id
-        so for each job id we can reduce the storage from 64bit to 1 bit, total we just need 4GB/8 = 500MB storeage for 4billion
+        so for each job id we can reduce the storage from 64bit to 1 bit, total we just need 4GB/8 = 500MB storage for 4billion
 
         create a set only remember the ids are not expire and use a bloom filter, if the bloom filter return false, that means the id is not in the set
         will return false directly,
