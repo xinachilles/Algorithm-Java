@@ -60,10 +60,10 @@ Follow Up code
         Queue<GitNode> q2 = new LinkedList<>();
         q2.offer(node2);
 
-        Set<GitNode> s1 = new HashSet<>();
-        Set<GitNode> s2 = new HashSet<>();
-        s1.add(node1);
-        s2.add(node2);
+        Set<GitNode> set1 = new HashSet<>();
+        Set<GitNode> set2 = new HashSet<>();
+        set1.add(node1);
+        set2.add(node2);
 //        int len1 = 1, len2 = 1; //万一是要求最短路径长度呢。
 
         //while里面是&&,因为一旦其中一个终结那也不用搜了。
@@ -73,12 +73,12 @@ Follow Up code
             for (int i = 0; i < size1; i++) {
                 GitNode cur1 = q1.poll();
                 for (GitNode par1 : cur1.parents) {
-                    if (s2.contains(par1)) {
+                    if (set2.contains(par1)) {
                         return par1;
                     }
-                    if (!s1.contains(par1)) {
+                    if (!set1.contains(par1)) {
                         q1.offer(par1);
-                        s1.add(par1);
+                        set1.add(par1);
                     }
                 }
             }
@@ -87,12 +87,12 @@ Follow Up code
             for (int i = 0; i < size2; i++) {
                 GitNode cur2 = q2.poll();
                 for (GitNode par2 : cur2.parents) {
-                    if (s1.contains(par2)) {
+                    if (set1.contains(par2)) {
                         return par2;
                     }
-                    if (!s2.contains(par2)) {
+                    if (!set2.contains(par2)) {
                         q2.offer(par2);
-                        s2.add(par2);
+                        set2.add(par2);
                     }
                 }
             }
