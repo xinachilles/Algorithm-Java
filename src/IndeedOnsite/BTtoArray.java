@@ -26,27 +26,28 @@ public class BTtoArray {
         if (height == 0){
             return new int[0];
         }
-        //dense tree的情况下,默认null node位置放0。(假设原来的tree里面没有0)
+
+        // we assume null = 0
         int len = (int) Math.pow(2, height);
         int[] heap = new int[len];
         //BFS一下就压缩好了
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
-        Queue<Integer> idxQueue = new LinkedList<>();
+        Queue<Integer> indexQueue = new LinkedList<>();
         //这里如果是1开头,那么就是(2i, 2i+1),如果是0开头,就是(2i+1,2i+2),其实1,2,3一下就看出来了。
-        idxQueue.offer(0);
+        indexQueue.offer(0);
 
         while (!queue.isEmpty()){
             TreeNode cur = queue.poll();
-            Integer curI = idxQueue.poll();
+            Integer curI = indexQueue.poll();
             heap[curI] = cur.val;
             if (cur.left != null){
                 queue.offer(cur.left);
-                idxQueue.offer(2*curI+1);
+                indexQueue.offer(2*curI+1);
             }
             if (cur.right != null){
                 queue.offer(cur.right);
-                idxQueue.offer(2*curI+2);
+                indexQueue.offer(2*curI+2);
             }
         }
 
@@ -87,6 +88,33 @@ public class BTtoArray {
         return Math.max(left, right)+1;
     }
 
+    public TreeNode deserialize(int[] input, int index ){
+        TreeNode root = new TreeNode(input[0]);
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        Queue<Integer> indexQueue = new LinkedList<>();
+        //这里如果是1开头,那么就是(2i, 2i+1),如果是0开头,就是(2i+1,2i+2),其实1,2,3一下就看出来了。
+        indexQueue.offer(0);
+
+        while (!queue.isEmpty()){
+            TreeNode cur = queue.poll();
+            Integer curI = indexQueue.poll();
+
+            if (2*curI+1<input.length && input[2*curI+1]!=0){
+                cur.left = new TreeNode(input[2*curI+1]);
+                queue.offer(cur.left);
+                indexQueue.offer(2*curI+1);
+            }
+            if (2*curI+2<input.length && input[2*curI+2]!=0){
+               cur.right = new TreeNode(input[2*curI+2]);
+               queue.offer(cur.left);
+               indexQueue.offer(2*curI+2);
+            }
+        }
+
+        return root;
+    }
+
     public static void main(String[] args) {
         BTtoArray test = new BTtoArray();
         TreeNode t1 = new TreeNode(1);
@@ -106,6 +134,7 @@ public class BTtoArray {
         }
     }
 }
+
 /* =============================================================================
 Follow Up
 =============================================================================*/

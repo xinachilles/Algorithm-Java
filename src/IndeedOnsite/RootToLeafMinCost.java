@@ -14,28 +14,32 @@ code
 =============================================================================*/
 //Edge和Node2都是给好的，里面的变量类型到时候和面试官讨论吧。
 class Edge {
-    Node2 node; //表示这个edge的尾巴指向哪里。
+    Node2 from;
+    Node2 to; //表示这个edge的尾巴指向哪里。
     int cost;
 
-    public Edge(Node2 n, int cost) {
-        this.node = n;
+    public Edge(Node2 from, Node2 to, int cost) {
+        this.from = from;
+        this.to = to;
         this.cost = cost;
     }
+
     @Override
-    public String toString(){
-        return "to: "+ String.valueOf(node.node);
+    public String toString() {
+        return String.valueOf(from.id) + " to " + String.valueOf(to.id);
     }
 }
 
 class Node2 {
-    int node;
+    int id;
     List<Edge> edges; //表示从这个头出发的所有edge
 
     public Node2(int node) {
-        this.node = node;
+        this.id = node;
         this.edges = new ArrayList<>();
     }
 }
+// recursively call dfs function to search all the path from root to leaf and Maintainance a global min variable
 
 public class RootToLeafMinCost {
     int minCost = Integer.MAX_VALUE;
@@ -53,22 +57,28 @@ public class RootToLeafMinCost {
         if (root == null) {
             return;
         }
-        // leaf
-        if (root.edges.size() == 0) {
-            if (curCost < minCost) {
-                minCost = curCost;
-                res.clear();
-                res.addAll(temp);
+
+        if (curCost > minCost) {
                 return;
+        }
+            // leaf
+            if (root.edges.size() == 0) {
+                if (curCost < minCost) {
+                    minCost = curCost;
+                    res.clear();
+                    res.addAll(temp);
+                    return;
+                }
             }
-        }
-        for (Edge e : root.edges) {
-            Node2 next = e.node;
-            temp.add(e);
-            dfs(res, temp, next, curCost + e.cost);
-            temp.remove(temp.size() - 1);
-        }
+            for (Edge e : root.edges) {
+               //  Node2 next = e.node;
+                Node2 next = e.to;
+                temp.add(e);
+                dfs(res, temp, next, curCost + e.cost);
+                temp.remove(temp.size() - 1);
+            }
     }
+
 
     //这个只返回个最小cost
     public int getMinCost(Node2 root) {
@@ -80,12 +90,14 @@ public class RootToLeafMinCost {
     }
 
     public void helper(Node2 root, int curCost) {
+
         if (root.edges.size() == 0) {
             minCost = Math.min(minCost, curCost);
             return;
         }
         for (Edge e : root.edges) {
-            Node2 next = e.node;
+            //Node2 next = e.node;
+            Node2 next = e.to;
             helper(next, curCost + e.cost);
         }
     }
@@ -124,22 +136,16 @@ public class RootToLeafMinCost {
         Node2 n5 = new Node2(5);
         Node2 n6 = new Node2(6);
 
-        Edge e1 = new Edge(n1,1);
-        n5.edges.add(e1);
-        n2.edges.add(e1);
 
-        Edge e3 = new Edge(n5,10);
-        n4.edges.add(e3);
+        n5.edges.add(new Edge(n5,n1,1));
+        n2.edges.add(new Edge(n2,n1,1));
+        n4.edges.add(new Edge(n4,n5,10));
+        n4.edges.add(new Edge(n4,n3,1));
+        n5.edges.add(new Edge(n5,n2,1));
+        n3.edges.add(new Edge(n3,n2,1));
 
-        Edge e4 = new Edge(n3,1);
-        n4.edges.add(e4);
-
-        Edge e5 = new Edge(n2,1);
-        n5.edges.add(e5);
-        n3.edges.add(e5);
-
-        Edge e6 = new Edge(n6,1);
-        n4.edges.add(e6);
+        //Edge e6 = new Edge(n4,n6,1);
+       // n4.edges.add(e6);
 
         List<Edge> result = test.getMinPathInGraph2(n4);
         for(Edge e: result){
@@ -148,6 +154,8 @@ public class RootToLeafMinCost {
 
 
     }
+
+
 
 
     /* =============================================================================
@@ -170,20 +178,75 @@ public class RootToLeafMinCost {
 /* =============================================================================
 Follow Up code
 =============================================================================*/
-//改良的DFS，就是用map记录的DFS
+//Many path will pass through some common nodes, many path will shared the same common node
+// we can calucate the min value from leaf the root
+// we have a dfs function we pass all the child node to this function and say could you give me the min path from my child node
+// to leaf node and then we campare the result and reeturn it to his parents node
+
+    class ResultWrapper {
+        List<Edge> path;
+        int cost;
+        public ResultWrapper(List<Edge> path, int cost ){
+            this.path = path;
+            this.cost = cost;
+        }
+        public ResultWrapper(){
+            path = new ArrayList<>();
+            cost = 0;
+        }
+
+    }
+    public List<Edge> getMinPathInGraph1(Node2 root) {
+
+
+        Map<Node2, ResultWrapper> dist = new HashMap<>();
+        // the min cost from current node to left
+        return helperinGetMin1(new Edge(root,root,0),dist).path;
+
+    }
+    private ResultWrapper helperinGetMin1(Edge e,Map<Node2,ResultWrapper> dist ){
+        Node2 root = e.to;
+        if(dist.containsKey(root)) return dist.get(root);
+        if(root == null){
+            return null;
+        }
+        if(root.edges.size() ==0){
+            return new ResultWrapper( );
+        }
+        int minCost = Integer.MAX_VALUE;
+        List<Edge> minPath = new ArrayList<>();
+        for(Edge edge: root.edges){
+            ResultWrapper r = helperinGetMin1(edge,dist);
+            if(r == null) continue;
+            if(r.cost+edge.cost<minCost){
+                minPath.clear();
+                minCost = r.cost+edge.cost;
+                minPath.addAll(r.path);
+                minPath.add(edge);
+
+            }
+        }
+
+        dist.put(root,new ResultWrapper(minPath,minCost));
+        return dist.get(root);
+    }
+
+    //改良的DFS，就是用map记录的DFS --- Xin 自顶向下，hashmap 好像没什么用
     //int minCost = Integer.MAX_VALUE;
 //
-
+    /*
     public List<Edge> getMinPathInGraph(Node2 root) {
         List<Edge> res = new ArrayList<>();
         List<Edge> temp = new ArrayList<>();
         Map<Node2, Integer> dist = new HashMap<>();
+        // the min cost from current node to left
         dfsInGraph(res, temp, root, 0,dist);
         return res;
     }
-
+/*
     public void dfsInGraph(List<Edge> res, List<Edge> temp, Node2 node, int curCost, Map<Node2,Integer> dist) {
         if (node == null) return;
+        // dist is distance from root to current node
         if (dist.containsKey(node) && curCost >= dist.get(node)) return;
         dist.put(node, curCost);
         if (node.edges.size() == 0) {
@@ -201,9 +264,15 @@ Follow Up code
             dfsInGraph(res, temp, next, curCost + e.cost,dist);
             temp.remove(temp.size() - 1);
         }
-    }
+    }*/
 
-    //dijkstra，写的真难看
+
+    //dijkstra，
+    // we have a priority queue, it sorted the node base on the distance from root to node
+    // each time the node pop from the queue is the min distance node ( min distance is mean from node to root)
+    // scan the node's neighbor to update all the distance
+    // finally the the dist hash map will be for all nodes, the mini distance from root to his node
+    // we can find the gobal min distance from root to leaf node base on the dist map
     public List<Edge> getMinPathInGraph2(Node2 root) {
         int minCost = Integer.MAX_VALUE;
         Node2 resNode = null;
@@ -234,7 +303,8 @@ Follow Up code
                 }
             }
             for (Edge e : cur.edges) {
-                Node2 next = e.node;
+               // Node2 next = e.node;
+                Node2 next = e.to;
                 int tempD = e.cost + d;
                 if (!dist.containsKey(next)) {
                     dist.put(next, tempD);
@@ -260,7 +330,7 @@ Follow Up code
         for (int i = 0; i < tempList.size() - 1; i++) {
             Node2 cur = tempList.get(i);
             for (Edge e : cur.edges) {
-                if (e.node.equals(tempList.get(i + 1))) {
+                if (e.to.equals(tempList.get(i + 1))) {
                     res.add(e);
                 }
             }

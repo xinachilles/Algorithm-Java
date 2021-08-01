@@ -1,7 +1,5 @@
 package IndeedProgEx;
 
-import IndeedOnsite.NormalizedTitle;
-
 import java.util.*;
 
 public class SearchDoc {
@@ -16,23 +14,78 @@ public class SearchDoc {
 
        String[] queryArray = query.split(" ");
        // we assume the max scoure should be queryArray.length
-       List<Integer>[] bucket = new ArrayList[queryArray.length+1];
+       Queue<Integer>[] bucket = new LinkedList[queryArray.length+1];
 
         for(int i = 0; i<docs.length; i++){
           String[] docArray = docs[i].split(" ");
 
           int score = getScoreWithoutSequence(queryArray,docArray);
+          if(bucket[score] == null) {
+              bucket[score] = new LinkedList<>();
+          }
           bucket[score].add(i);
         }
         List<Integer> result = new ArrayList<>();
         for(int i = bucket.length-1; i>=0;i--){
-            for(int id: bucket[i]){
-                result.add(id);
+            while(bucket[i]!=null && !bucket[i].isEmpty())
+                result.add(bucket[i].poll());
                 if(result.size() == 10){
                     return result;
                 }
+        }
+
+        return result;
+    }
+
+    public List<Integer> search2(String[] docs, String query){
+        //word -> doc id
+        Map<String,List<Integer>> index = new HashMap<>();
+        for(int i = 0;i<docs.length;i++){
+            String[] words = docs[i].split(" ");
+            for(String word: words){
+                index.computeIfAbsent(word,a->new ArrayList<>()).add(i);
             }
         }
+        int[]score = new int[docs.length];
+        String[] queryArray = query.split(" ");
+
+        for(int i = 0; i<docs.length;i++){
+            for(String q: queryArray){
+                if(index.containsKey(q) && index.get(q).contains(i)){
+                    score[i]++;
+                }
+            }
+        }
+        /*
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a,b)->score[b]-score[a]);
+        for(int i = 0; i<docs.length;i++){
+            pq.add(i);
+        }
+        List<Integer> result = new ArrayList<>();
+        for(int i = 0; i<10 &&!pq.isEmpty();i++){
+            result.add(pq.poll());
+        }
+        return result;
+
+         */
+        // we assume the max scoure should be queryArray.length
+        Queue<Integer>[] bucket = new LinkedList[queryArray.length+1];
+        for(int i = 0;i<score.length;i++){
+            if(bucket[score[i]] == null) {
+                bucket[score[i]] = new LinkedList<>();
+            }
+            bucket[score[i]].add(i);
+        }
+
+        List<Integer> result = new ArrayList<>();
+        for(int i = bucket.length-1; i>=0;i--){
+            while(bucket[i]!=null && !bucket[i].isEmpty())
+                result.add(bucket[i].poll());
+            if(result.size() == 10){
+                return result;
+            }
+        }
+
         return result;
     }
 
@@ -46,5 +99,14 @@ public class SearchDoc {
             }
         }
         return score;
+    }
+
+    public static void main(String[] args) {
+        SearchDoc doc = new SearchDoc();
+        String[] docs = {"we want someone good at java and spring", "are you good at cpp","java","test","hello","good","at"};
+        List<Integer> result = doc.search(docs,"good at java");
+        for(Integer r: result){
+            System.out.print(r);
+        }
     }
 }

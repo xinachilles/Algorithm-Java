@@ -1,8 +1,6 @@
-package IndeedOnsite;
+package IndeedProgEx;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /* =============================================================================
 Question Description
@@ -76,13 +74,11 @@ public class NormalizedTitle {
         String result = test.getHighestTitle(rawTitle, cleanTitles);
         System.out.println(result);
         */
-        int result = test.getScore(new String[]{"a","a","a","b"}, new String[]{"a","a","b"});
+        int result = test.getScore(new String[]{"a", "a", "a", "b"}, new String[]{"a", "a", "b"});
         System.out.println(result);
 
 
-
     }
-
 
 
     /* =============================================================================
@@ -115,35 +111,70 @@ Follow Up code
     }
 
 
-
-
-// longest common subsequence, consider about the sequence
+    // longest common subsequence, consider about the sequence
     public int getScore(String[] raw, String[] cleanTitle) {
 
-        int[][] dp = new int[raw.length+1][cleanTitle.length+1];
+        int[][] dp = new int[raw.length + 1][cleanTitle.length + 1];
         for (int i = 0; i < raw.length; i++) {
             for (int j = 0; j < cleanTitle.length; j++) {
                 if (raw[i].equals(cleanTitle[j])) {
-                        dp[i+1][j+1] = dp[i][j]+1;
-                    } else {
-                        dp[i+1][j+1] = Math.max(dp[i][j+1], dp[i+1][j]);
-                    }
+                    dp[i + 1][j + 1] = dp[i][j] + 1;
+                } else {
+                    dp[i + 1][j + 1] = Math.max(dp[i][j + 1], dp[i + 1][j]);
                 }
+            }
         }
 
         return dp[raw.length][cleanTitle.length];
     }
 
-    public int getScoreWithoutSequence(String[]raw, String[] cleanTitle){
+    public int getScoreWithoutSequence(String[] raw, String[] cleanTitle) {
         Set<String> set = new HashSet<>(Arrays.asList(raw));
         int score = 0;
-        for(String title : cleanTitle){
-            if(set.contains(title)){
+        for (String title : cleanTitle) {
+            if (set.contains(title)) {
                 set.remove(title);
                 score++;
             }
         }
         return score;
+    }
+
+    // from pdf
+    // build a inverted index, key is the word in the clean title  ->index of  the cleanTile array
+    Map<String, Set<Integer>> map = new HashMap<>();
+
+    public void Init(List<String> cleanTitle) {
+        for (int i = 0; i < cleanTitle.size(); ++i) {
+            String[] arry = cleanTitle.get(i).split(" ");
+            for (String a : arry) {
+                map.computeIfAbsent(a, b -> new HashSet<>()).add(i);
+            }
+
+        }
+    }
+
+    public String solve(String target, List<String> cleanTitle) {
+        // index in the cleanTitle and how many times this word appear in the target string
+        Map<Integer, Integer> count = new HashMap<>();
+        int ans = 0, id = 0;
+
+        String[] targetArry = target.split(" ");
+        for (String t : targetArry) {
+            if (!map.containsKey(t)) continue;
+            for (int index : map.get(t)) {
+
+                count.put(index, count.getOrDefault(index, 0) + 1);
+                if (count.get(index) > ans) {
+                    ans = count.get(index);
+                    id = index;
+                }
+            }
+
+        }
+
+
+        return cleanTitle.get(id);
     }
 }
 /* =============================================================================

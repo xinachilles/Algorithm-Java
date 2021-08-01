@@ -4,51 +4,30 @@ import java.util.Arrays;
  * Created by xhu on 2/12/17.
  */
 public class StoneGame {
-    public int stoneGame(int[] A) {
-        // Write your code here
-        if (A == null || A.length == 0) {
-            return 0;
-        }
+    public boolean stoneGame(int[] piles) {
+        int length = piles.length;
+        int sum = Arrays.stream(piles).sum();
+        // dp[i][j] means the total number player 1 will take from index i to index j
+        int[][]dp = new int[length][length];
 
-        int[][] dp = new int[A.length][A.length];
-        int[][] sum = new int[A.length][A.length];
-
-        for (int i = 0; i < A.length; i++) {
-            for (int j = i; j < A.length; j++) {
-                if (i == j) {
-                    sum[i][j] = A[i];
-                } else {
-
-                    sum[i][j] = sum[i][j - 1] + A[j];
+        for(int i = piles.length-1;i>=0;i--){
+            for(int j = i; j<=piles.length-1; j++){
+                if(i == j){
+                    dp[i][j]  = piles[i];
+                }else if(i == j-1){
+                    dp[i][j] = Math.max(piles[i],piles[j]);
+                }else{
+                    // if first player take left one
+                    int left = Math.min(dp[i+1][j-1],dp[i+2][j])+piles[i];
+                    // if first player take right one
+                    int right =Math.min(dp[i+1][j-1],dp[i][j-2])+piles[j];
+                    dp[i][j] = Math.max(left, right);
                 }
             }
         }
+        return dp[0][piles.length-1]*2 >= sum;
 
-
-        stoneGameHelper(sum, 0, A.length - 1, dp);
-        return dp[0][A.length - 1];
     }
 
-    private int stoneGameHelper(int[][] sum, int start, int end, int[][] dp) {
 
-        if (start == end) {
-            dp[start][end] = sum[start][end];
-            return dp[start][end];
-        }
-
-        if (dp[start][end] > 0) {
-            return dp[start][end];
-        }
-        int min = Integer.MAX_VALUE;
-        for (int i = start; i < end; i++) {
-            int left = stoneGameHelper(sum, start, i, dp);
-            int right = stoneGameHelper(sum, i + 1, end, dp);
-            int current = sum[start][end];
-
-            min = Math.min(left + right + current, min);
-        }
-
-        dp[start][end] = min;
-        return min;
-    }
 }

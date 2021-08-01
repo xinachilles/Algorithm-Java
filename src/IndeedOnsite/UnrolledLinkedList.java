@@ -63,14 +63,15 @@ class LinkedList {
         // find the node corresponding to index
         while (cur != null && index >= 0) {
 
-            if (index >= 5) {
-                index -= 5;
+            if (index >= cur.len) {
+                index -= cur.len;
             } else {
                 // if the current node is full, move the last character to new node
                 if (cur.len == 5) {
                     Node newNode = new Node();
                     newNode.chars[0] = cur.chars[4];
                     newNode.len = 1;
+                    // insert the new node
                     newNode.next = cur.next;
                     cur.next = newNode;
                     cur.len -= 1;
@@ -124,35 +125,36 @@ class LinkedList {
     //链表题到时候画一个下面的小case，就能对准index了。
     public static void main(String[] args) {
         Node n1 = new Node(); //a b
-        Node n2 = new Node(); //b
-        Node n3 = new Node(); //a b c d e
+       // Node n2 = new Node(); //b
+       // Node n3 = new Node(); //a b c d e
 
         n1.chars[0] = 'a';
-        n1.chars[1] = 'b';
-        n1.chars[2] = 'c';
-        n1.chars[3] = 'd';
-        n1.chars[4] = 'e';
+       // n1.chars[1] = 'b';
+       // n1.chars[2] = 'c';
+       // n1.chars[3] = 'd';
+      //  n1.chars[4] = 'e';
 
-        n2.chars[0] = 'b';
+       // n2.chars[0] = 'b';
 
-        n3.chars[0] = 'a';
-        n3.chars[1] = 'b';
-        n3.chars[2] = 'c';
-        n3.chars[3] = 'd';
-        n3.chars[4] = 'e';
+      //  n3.chars[0] = 'a';
+     //   n3.chars[1] = 'b';
+     //   n3.chars[2] = 'c';
+     //   n3.chars[3] = 'd';
+     //   n3.chars[4] = 'e';
 
-        n1.next = n2;
-        n2.next = n3;
-        n1.len = 5;
-        n2.len = 1;
-        n3.len = 5;
+      //  n1.next = n2;
+     //   n2.next = n3;
+        n1.len = 1;
+     //   n2.len = 1;
+     //   n3.len = 5;
 
         LinkedList list =  new LinkedList(n1);
-        list.insert('f',2);
+        list.insert('f',1);
+
         list.print();
-        for(int i = 0; i<list.totalLen;i++){
-           System.out.print( list.get(i));
-        }
+
+        list.delete(1);
+        list.print();
 
     }
 
@@ -194,8 +196,10 @@ Follow Up code
                     for (int i = index; i < cur.len - 1; i++) {
                         cur.chars[i] = cur.chars[i + 1];
                     }
+                    cur.chars[cur.len-1] = '\0';
                     cur.len -= 1;
                 }
+                break;// break the while loop;
             }
 
             prev = cur;
@@ -248,4 +252,11 @@ class LinkedList {
             get比较容易，就是从head traverse，定位第index个char；insert有点麻烦，有几种情况需要考虑。
             时间有点不太够，所以insert函数没完全实现 T.T
 <K> 第一个是设计一个fixed size cache的数据结构。（这句话不知所云）
+接着问: 有没有可能更更快呢?
+当然有可能了了
+⽤用rope数据结构
+其实就是BST的变种
+⽤用splay tree可做， STL中的rope实际上是红⿊黑树，可是谁能现场写TMD红⿊黑树，splay树
+能讲出来就不不错了了，注意碰到这个题能讲出⽤用splay优化是极⼤大的加分项 ，实在不不⾏行行就⽤用嘴
+BB⼏几句句说⽤用平衡⼆二叉搜索树优化
 */

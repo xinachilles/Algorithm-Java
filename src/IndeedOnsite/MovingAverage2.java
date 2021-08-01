@@ -18,6 +18,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 //应付内存不够的办法。
+// instead of creating a new event for each data,  we can combin all the event in 10 second  in a event
 public class MovingAverage2 {
     class Event {
         int val;
