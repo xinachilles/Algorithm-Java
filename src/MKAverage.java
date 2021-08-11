@@ -8,12 +8,17 @@ import java.util.TreeSet;
 public class MKAverage {
     int m = 0;
     int k = 0;
-    int sizeOfMid;
+
     int totalSum;
     //int totalNumber;
     TreeMap<Integer,Integer> left;
     TreeMap<Integer,Integer> right;
     TreeMap<Integer,Integer> mid;
+    int sizeOfLeft;
+    int sizeOfRight;
+    int sizeOfMid;
+
+
     // for last m element
     Queue<Integer> buffer;
 
@@ -22,58 +27,83 @@ public class MKAverage {
         this.m = m;
         this.k = k;
         totalSum = 0;
-        sizeOfMid = m-2*k;
+        sizeOfMid = 0;
+        sizeOfLeft = 0;
+        sizeOfRight = 0;
         left = new TreeMap<>();
         right = new TreeMap<>();
         mid = new TreeMap<>();
         buffer = new LinkedList<>();
     }
 
+    private void remove(int n, TreeMap<Integer,Integer> map){
+
+        map.put(n,map.get(n)-1);
+        if(map.get(n)==0) map.remove(n);
+    }
+
     private void add(int n) {
         left.put(n, left.getOrDefault(n,0)+1);
+        sizeOfLeft++;
+
         System.out.println("add "+n);
-        if(left.size()>k){
+        if(sizeOfLeft>k){
             int big = left.lastKey();
             System.out.println("move"+big+"from left to mid");
-            left.put(big,left.get(big)-1);
-            if(left.get(big)==0) left.remove(big);
+            remove(big,left);
+            sizeOfLeft--;
             totalSum+=big;
             mid.put(big,mid.getOrDefault(big,0)+1);
+            sizeOfMid++;
         }
-        if(mid.size()>sizeOfMid){
-            int big = mid.pollLast();
+        if(sizeOfMid>m-2*k){
+            int big = mid.lastKey();
             System.out.println("move"+big+"from mid to right");
+            remove(big,mid);
+            sizeOfMid--;
             totalSum-=big;
-            right.add(big);
+            right.put(big,right.getOrDefault(big,0)+1);
+            sizeOfRight++;
         }
 
     }
     private void remove(int n){
         System.out.println("remove "+n);
         if(left.containsKey(n)){
+            remove(n,left);
+            sizeOfLeft--;
             System.out.println("remove"+n+"from left");
-            left.remove(n);
-        }else if(mid.contains(n)){
+
+        }else if(mid.containsKey(n)){
             System.out.println("remove"+n+"from mid");
             totalSum-=n;
-            mid.remove(n);
+            remove(n,mid);
+            sizeOfMid--;
         }else{
             System.out.println("remove"+n+"from right");
-            right.remove(n);
+            remove(n,right);
+            sizeOfRight--;
         }
 
         if(left.size()<k){
-            int small = mid.pollFirst();
+            int small = mid.firstKey();
             System.out.println("move"+small+"from mid to left");
             totalSum-=small;
-            left.add(small);
+            remove(small,mid);
+            sizeOfMid--;
+            left.put(small,left.getOrDefault(small,0)+1);
+            sizeOfLeft++;
+
         }
 
-        if(!right.isEmpty() &&  mid.size()<sizeOfMid){
-            int small = right.pollFirst();
+        if(!right.isEmpty() &&  sizeOfMid<m-2*k){
+            int small = right.firstKey();
             System.out.println("move"+small+"from right to mid");
+            remove(small,right);
+            sizeOfRight--;
             totalSum+=small;
-            mid.add(small);
+            mid.put(small,mid.getOrDefault(small,0)+1);
+            sizeOfMid++;
         }
 
 
@@ -93,6 +123,6 @@ public class MKAverage {
     public int calculateMKAverage() {
         if(buffer.size()<m) return -1;
         System.out.println("total:"+totalSum+"average:"+totalSum/sizeOfMid);
-        return totalSum/sizeOfMid;
+        return totalSum/(m-2*k);
     }
 }
